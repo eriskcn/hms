@@ -20,7 +20,7 @@ CREATE TABLE rooms (
                       number VARCHAR(10) NOT NULL,
                       type ENUM('Standard', 'Suite', 'VIP') NOT NULL,
                       price DECIMAL(10, 2) NOT NULL,
-                      status ENUM('Available', 'Occupied', 'Maintenance') NOT NULL,
+                      status ENUM('Available', 'Unavailable') NOT NULL,
                       is_deleted BOOLEAN DEFAULT FALSE,
                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

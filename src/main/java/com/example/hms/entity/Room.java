@@ -1,6 +1,7 @@
 package com.example.hms.entity;
 
-import com.example.hms.entity.enumdef.Gender;
+import com.example.hms.entity.enumdef.Status;
+import com.example.hms.entity.enumdef.Type;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -10,33 +11,31 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="guests")
+@Table(name = "rooms")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Guest {
+public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(name = "id_card", length = 12, nullable = false)
-    private String idCard;
+    @Column(nullable = false, length = 5)
+    private String number;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Gender gender;
+    private Type type;
 
-    @Column(length = 15)
-    private String phone;
+    @Column(precision = 10, scale = 2, nullable = false)
+    private BigDecimal price;
 
-    @Column(name = "total_amount", precision = 10, scale = 2, columnDefinition = "decimal(10, 2) default 0")
-    private BigDecimal totalAmount = BigDecimal.ZERO;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
 
     @Column(name = "is_deleted")
-    private Boolean isDeleted = false;
+    private Boolean isDeleted;
 
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp

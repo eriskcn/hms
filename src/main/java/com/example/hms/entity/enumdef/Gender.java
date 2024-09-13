@@ -1,4 +1,4 @@
-package com.example.hms.entity;
+package com.example.hms.entity.enumdef;
 
 public enum Gender {
     MALE,

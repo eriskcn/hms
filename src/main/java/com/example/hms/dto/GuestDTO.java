@@ -1,6 +1,6 @@
 package com.example.hms.dto;
 
-import com.example.hms.entity.Gender;
+import com.example.hms.entity.enumdef.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

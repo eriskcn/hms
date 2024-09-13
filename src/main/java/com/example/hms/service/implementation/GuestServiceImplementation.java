@@ -1,8 +1,9 @@
-package com.example.hms.service;
+package com.example.hms.service.implementation;
 
 import com.example.hms.dto.GuestDTO;
 import com.example.hms.entity.Guest;
 import com.example.hms.repository.GuestRepository;
+import com.example.hms.service.GuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
