@@ -21,9 +21,10 @@ mvn spring-boot:run
 ```
 
 #### Step 4: Setup the MySQL Database
+Make sure you have [MySQL](https://www.mysql.com/downloads/) installed on your system.
 1. Log in to your MySQL database:
 ```bash
-mysql -u root -p
+sudo mysql -u root -p
 ```
 
 2. Create the database and user:
