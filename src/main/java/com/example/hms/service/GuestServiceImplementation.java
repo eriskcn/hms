@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class GuestServiceImplement implements GuestService {
+public class GuestServiceImplementation implements GuestService {
     @Autowired
     private GuestRepository guestRepository;
 
     @Override
-    public GuestDTO createGuest(GuestDTO guestDto) {
-        Guest guest = mapToEntity(guestDto);
+    public GuestDTO createGuest(GuestDTO guestDTO) {
+        Guest guest = mapToEntity(guestDTO);
         guest = guestRepository.save(guest);
         return mapToDTO(guest);
     }
@@ -37,15 +37,15 @@ public class GuestServiceImplement implements GuestService {
     }
 
     @Override
-    public GuestDTO updateGuest(Long id, GuestDTO guestDto) {
+    public GuestDTO updateGuest(Long id, GuestDTO guestDTO) {
         Guest guest = guestRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Guest not found on::" + id)
         );
-        guest.setName(guestDto.getName());
-        guest.setIdCard(guestDto.getIdCard());
-        guest.setGender(guestDto.getGender());
-        guest.setPhone(guestDto.getPhone());
-        guest.setTotalAmount(guestDto.getTotalAmount());
+        guest.setName(guestDTO.getName());
+        guest.setIdCard(guestDTO.getIdCard());
+        guest.setGender(guestDTO.getGender());
+        guest.setPhone(guestDTO.getPhone());
+        guest.setTotalAmount(guestDTO.getTotalAmount());
         return mapToDTO(guestRepository.save(guest));
     }
 
@@ -62,13 +62,13 @@ public class GuestServiceImplement implements GuestService {
         return new GuestDTO(guest.getId(), guest.getName(), guest.getIdCard(), guest.getGender(), guest.getPhone(), guest.getTotalAmount());
     }
 
-    private Guest mapToEntity(GuestDTO guestDto) {
+    private Guest mapToEntity(GuestDTO guestDTO) {
         Guest guest = new Guest();
-        guest.setName(guestDto.getName());
-        guest.setIdCard(guestDto.getIdCard());
-        guest.setGender(guestDto.getGender());
-        guest.setPhone(guestDto.getPhone());
-        guest.setTotalAmount(guestDto.getTotalAmount());
+        guest.setName(guestDTO.getName());
+        guest.setIdCard(guestDTO.getIdCard());
+        guest.setGender(guestDTO.getGender());
+        guest.setPhone(guestDTO.getPhone());
+        guest.setTotalAmount(guestDTO.getTotalAmount());
         return guest;
     }
 }

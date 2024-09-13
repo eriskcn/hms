@@ -5,9 +5,9 @@ import com.example.hms.dto.GuestDTO;
 import java.util.List;
 
 public interface GuestService {
-    GuestDTO createGuest(GuestDTO guestDto);
+    GuestDTO createGuest(GuestDTO guestDTO);
     List<GuestDTO> getAllGuests();
     GuestDTO getGuestById(Long id);
-    GuestDTO updateGuest(Long id, GuestDTO guestDto);
-    void deleteGuest(Long guestId);
+    GuestDTO updateGuest(Long id, GuestDTO guestDTO);
+    void deleteGuest(Long id);
 }

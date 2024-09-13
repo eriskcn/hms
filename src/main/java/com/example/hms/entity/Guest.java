@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name="guests")
-//@SQLDelete(sql = "UPDATE guests SET is_deleted = true WHERE id = ?")
-//@Where(clause = "is_deleted = false")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
