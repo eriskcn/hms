@@ -34,8 +34,8 @@ public class Room {
     @Column(nullable = false)
     private Status status;
 
-    @Column(name = "is_deleted")
-    private Boolean isDeleted;
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = Boolean.FALSE;
 
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp

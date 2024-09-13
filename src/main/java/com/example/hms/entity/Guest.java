@@ -35,8 +35,8 @@ public class Guest {
     @Column(name = "total_amount", precision = 10, scale = 2, columnDefinition = "decimal(10, 2) default 0")
     private BigDecimal totalAmount = BigDecimal.ZERO;
 
-    @Column(name = "is_deleted")
-    private Boolean isDeleted = false;
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = Boolean.FALSE;
 
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp

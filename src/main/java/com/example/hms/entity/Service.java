@@ -35,7 +35,7 @@ public class Service {
     private Status status;
 
     @Column(nullable = false, name = "is_deleted")
-    private Boolean isDeleted = false;
+    private Boolean isDeleted = Boolean.FALSE;
 
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
