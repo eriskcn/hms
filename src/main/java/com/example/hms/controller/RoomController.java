@@ -3,6 +3,8 @@ package com.example.hms.controller;
 import com.example.hms.dto.RoomDTO;
 import com.example.hms.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,12 +14,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/hms/rooms")
 public class RoomController {
+    private final RoomService roomService;
+
     @Autowired
-    private RoomService roomService;
+    public RoomController(RoomService roomService) {
+        this.roomService = roomService;
+    }
 
     @GetMapping
-    public List<RoomDTO> getAllRooms() {
-        return roomService.getAllRooms();
+    public ResponseEntity<Page<RoomDTO>> getAllRooms(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String filterCriteria,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(roomService.getAllRooms(search, filterCriteria, pageable));
     }
 
     @GetMapping("/{id}")

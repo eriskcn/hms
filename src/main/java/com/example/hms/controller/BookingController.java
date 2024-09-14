@@ -1,29 +1,38 @@
 package com.example.hms.controller;
 
 import com.example.hms.dto.BookingDTO;
+import com.example.hms.dto.BookingPresentationDTO;
 import com.example.hms.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/hms/bookings")
 public class BookingController {
+    private final BookingService bookingService;
+
     @Autowired
-    private BookingService bookingService;
+    public BookingController(BookingService bookingService) {
+        this.bookingService = bookingService;
+    }
 
     @GetMapping
-    public List<BookingDTO> getAllBookings() {
-        return bookingService.getAllBookings();
+    public ResponseEntity<Page<BookingPresentationDTO>> getAllBookings(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String filterCriteria,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(bookingService.getAllBookings(search, filterCriteria, pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookingDTO> getBookingById(@PathVariable("id") Long id) {
-        BookingDTO bookingDTO = bookingService.getBookingById(id);
-        return ResponseEntity.ok(bookingDTO);
+    public ResponseEntity<BookingPresentationDTO> getBookingById(@PathVariable("id") Long id) {
+        BookingPresentationDTO bookingPresentationDTO = bookingService.getBookingById(id);
+        return ResponseEntity.ok(bookingPresentationDTO);
     }
 
     @PostMapping

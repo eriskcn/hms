@@ -32,7 +32,7 @@ public class Service {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status;
+    private Status status = Status.AVAILABLE;
 
     @Column(nullable = false, name = "is_deleted")
     private Boolean isDeleted = Boolean.FALSE;

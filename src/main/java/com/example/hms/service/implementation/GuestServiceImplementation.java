@@ -2,19 +2,28 @@ package com.example.hms.service.implementation;
 
 import com.example.hms.dto.GuestDTO;
 import com.example.hms.entity.Guest;
+import com.example.hms.exception.ResourceNotFoundException;
 import com.example.hms.repository.GuestRepository;
 import com.example.hms.service.GuestService;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class GuestServiceImplementation implements GuestService {
+    private final GuestRepository guestRepository;
+
     @Autowired
-    private GuestRepository guestRepository;
+    public GuestServiceImplementation(GuestRepository guestRepository) {
+        this.guestRepository = guestRepository;
+    }
 
     @Override
     public GuestDTO createGuest(GuestDTO guestDTO) {
@@ -24,9 +33,42 @@ public class GuestServiceImplementation implements GuestService {
     }
 
     @Override
-    public List<GuestDTO> getAllGuests() {
-        List<Guest> guests = guestRepository.findAllByIsDeletedFalse();
-        return guests.stream().map(this::mapToDTO).collect(Collectors.toList());
+    public Page<GuestDTO> getAllGuests(String search, String filterCriteria, Pageable pageable) {
+        Specification<Guest> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Search functionality
+            if (search != null && !search.isEmpty()) {
+                String searchLower = "%" + search.toLowerCase() + "%";
+                predicates.add(criteriaBuilder.or(
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), searchLower),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("idCard")), searchLower),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("phone")), searchLower)
+                ));
+            }
+
+            // Filter functionality
+            if (filterCriteria != null && !filterCriteria.isEmpty()) {
+                switch (filterCriteria.toLowerCase()) {
+                    case "vip":
+                        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("totalAmount"), new BigDecimal(1000)));
+                        break;
+                    case "normal":
+                        predicates.add(criteriaBuilder.lessThan(root.get("totalAmount"), new BigDecimal(1000)));
+                        break;
+                    default:
+                        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("totalAmount"), BigDecimal.ZERO));
+                        break;
+                }
+            }
+
+            // Only return non-deleted guests
+            predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Page<Guest> guestsPage = guestRepository.findAll(spec, pageable);
+        return guestsPage.map(this::mapToDTO);
     }
 
     @Override

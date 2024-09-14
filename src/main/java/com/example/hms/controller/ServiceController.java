@@ -2,23 +2,30 @@ package com.example.hms.controller;
 
 import com.example.hms.dto.ServiceDTO;
 import com.example.hms.service.ServiceService;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/hms/services")
 public class ServiceController {
+    private final ServiceService serviceService;
+
     @Autowired
-    private ServiceService serviceService;
+    public ServiceController(ServiceService serviceService) {
+        this.serviceService = serviceService;
+    }
 
     @GetMapping
-    public List<ServiceDTO> getAllServices() {
-        return serviceService.getAllServices();
+    public ResponseEntity<Page<ServiceDTO>> getAllServices(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String filterCriteria,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(serviceService.getAllServices(search, filterCriteria, pageable));
     }
 
     @GetMapping("/{id}")

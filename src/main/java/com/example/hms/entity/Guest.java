@@ -32,7 +32,7 @@ public class Guest {
     @Column(length = 15)
     private String phone;
 
-    @Column(name = "total_amount", precision = 10, scale = 2, columnDefinition = "decimal(10, 2) default 0")
+    @Column(name = "total_amount", precision = 10, scale = 2, nullable = false)
     private BigDecimal totalAmount = BigDecimal.ZERO;
 
     @Column(name = "is_deleted", nullable = false)

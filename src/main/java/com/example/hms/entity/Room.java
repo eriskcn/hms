@@ -32,7 +32,7 @@ public class Room {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status;
+    private Status status = Status.AVAILABLE;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = Boolean.FALSE;

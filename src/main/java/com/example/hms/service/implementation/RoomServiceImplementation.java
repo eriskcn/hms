@@ -5,17 +5,27 @@ import com.example.hms.entity.Room;
 import com.example.hms.repository.RoomRepository;
 import com.example.hms.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import com.example.hms.exception.ResourceNotFoundException;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import jakarta.persistence.criteria.Predicate;
+
 
 @Service
 public class RoomServiceImplementation implements RoomService {
+    private final RoomRepository roomRepository;
 
     @Autowired
-    private RoomRepository roomRepository;
+    public RoomServiceImplementation(RoomRepository roomRepository) {
+        this.roomRepository = roomRepository;
+    }
 
     @Override
     public RoomDTO createRoom(RoomDTO roomDTO) {
@@ -25,9 +35,39 @@ public class RoomServiceImplementation implements RoomService {
     }
 
     @Override
-    public List<RoomDTO> getAllRooms() {
-        List<Room> rooms = roomRepository.findAllByIsDeletedFalse();
-        return rooms.stream().map(this::mapToDTO).collect(Collectors.toList());
+    public Page<RoomDTO> getAllRooms(String search, String filterCriteria, Pageable pageable) {
+        Specification<Room> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Search functionality
+            if (search != null && !search.isEmpty()) {
+                String searchLower = "%" + search.toLowerCase() + "%";
+                predicates.add(criteriaBuilder.like(root.get("number"), searchLower));
+            }
+
+            // Filter functionality
+            if (filterCriteria != null && !filterCriteria.isEmpty()) {
+                switch (filterCriteria.toLowerCase()) {
+                    case "standard":
+                        predicates.add(criteriaBuilder.equal(root.get("standard"), filterCriteria));
+                        break;
+                    case "suite":
+                        predicates.add(criteriaBuilder.equal(root.get("suite"), filterCriteria));
+                        break;
+                    case "vip":
+                        predicates.add(criteriaBuilder.equal(root.get("vip"), filterCriteria));
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            // Only return non-deleted rooms
+            predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+        Page<Room> roomsPage = roomRepository.findAll(spec, pageable);
+        return roomsPage.map(this::mapToDTO);
     }
 
     @Override

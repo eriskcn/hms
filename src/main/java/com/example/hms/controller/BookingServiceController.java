@@ -10,36 +10,40 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/hms/bookingservices")
+@RequestMapping("/hms/booking-services")
 public class BookingServiceController {
+    private final BookingServiceService bookingServiceService;
+
     @Autowired
-    private BookingServiceService bookingServiceService;
+    public BookingServiceController(BookingServiceService bookingServiceService) {
+        this.bookingServiceService = bookingServiceService;
+    }
 
     @GetMapping
-    public List<BookingServiceDTO> getAllBookingService(){
+    public List<BookingServiceDTO> getAllBookingService() {
         return bookingServiceService.getAllBookingServices();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookingServiceDTO> getBookingServiceById(@PathVariable("id") Long id){
+    public ResponseEntity<BookingServiceDTO> getBookingServiceById(@PathVariable("id") Long id) {
         BookingServiceDTO bookingServiceDTO = bookingServiceService.getBookingServiceById(id);
         return ResponseEntity.ok(bookingServiceDTO);
     }
 
     @PostMapping
-    public ResponseEntity<BookingServiceDTO> createBookingService(@RequestBody BookingServiceDTO bookingServiceDTO){
+    public ResponseEntity<BookingServiceDTO> createBookingService(@RequestBody BookingServiceDTO bookingServiceDTO) {
         BookingServiceDTO newBookingServices = bookingServiceService.createBookingService(bookingServiceDTO);
         return new ResponseEntity<>(newBookingServices, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookingServiceDTO> updateBookingService(@PathVariable("id") Long id, @RequestBody BookingServiceDTO bookingServiceDTO){
+    public ResponseEntity<BookingServiceDTO> updateBookingService(@PathVariable("id") Long id, @RequestBody BookingServiceDTO bookingServiceDTO) {
         BookingServiceDTO updatedBookingService = bookingServiceService.updateBookingService(id, bookingServiceDTO);
         return ResponseEntity.ok(updatedBookingService);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBookingService(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deleteBookingService(@PathVariable("id") Long id) {
         bookingServiceService.deleteBookingService(id);
         return ResponseEntity.noContent().build();
     }
