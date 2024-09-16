@@ -69,7 +69,7 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
                         predicates.add(criteriaBuilder.equal(root.get("isPreBooking"), true));
                         break;
                     case "checked-out":
-                        predicates.add(criteriaBuilder.equal(root.get("isPreBooking"), false));
+                        predicates.add(criteriaBuilder.notEqual(root.get("checkOut"), null));
                         break;
                     default:
                         break;
