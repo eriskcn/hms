@@ -1,6 +1,7 @@
 package com.example.hms.service.implementation;
 
-import com.example.hms.dto.BookingServiceDTO;
+import com.example.hms.dto.bookingservice.BookingServiceDTO;
+import com.example.hms.dto.bookingservice.BookingServicePresentationDTO;
 import com.example.hms.entity.Booking;
 import com.example.hms.entity.Service;
 import com.example.hms.repository.BookingRepository;
@@ -28,17 +29,17 @@ public class BookingServiceServiceImplementation implements BookingServiceServic
     }
 
     @Override
-    public List<BookingServiceDTO> getAllBookingServices() {
+    public List<BookingServicePresentationDTO> getAllBookingServices() {
         List<BookingService> bookingServices = bookingServiceRepository.findAllByIsDeletedFalse();
-        return bookingServices.stream().map(this::mapToDTO).collect(Collectors.toList());
+        return bookingServices.stream().map(this::mapToPresentationDTO).collect(Collectors.toList());
     }
 
     @Override
-    public BookingServiceDTO getBookingServiceById(Long id) {
+    public BookingServicePresentationDTO getBookingServiceById(Long id) {
         BookingService bookingService = bookingServiceRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("BookingService not found on::" + id)
         );
-        return mapToDTO(bookingService);
+        return mapToPresentationDTO(bookingService);
     }
 
     @Override
@@ -73,7 +74,7 @@ public class BookingServiceServiceImplementation implements BookingServiceServic
     }
 
     private BookingServiceDTO mapToDTO(BookingService bookingService) {
-        return new BookingServiceDTO(bookingService.getId(), bookingService.getBooking().getId(), bookingService.getService().getId());
+        return new BookingServiceDTO(bookingService.getId(), bookingService.getBooking().getId(), bookingService.getService().getId(), bookingService.getQuantity());
     }
 
     private BookingService mapToEntity(BookingServiceDTO bookingServiceDTO) {
@@ -87,5 +88,14 @@ public class BookingServiceServiceImplementation implements BookingServiceServic
         bookingService.setBooking(booking);
         bookingService.setService(service);
         return bookingService;
+    }
+
+    private BookingServicePresentationDTO mapToPresentationDTO(BookingService bookingService) {
+        BookingServicePresentationDTO bookingServicePresentationDTO = new BookingServicePresentationDTO();
+        bookingServicePresentationDTO.setId(bookingService.getId());
+        bookingServicePresentationDTO.setBooking(bookingService.getBooking());
+        bookingServicePresentationDTO.setService(bookingService.getService());
+        bookingServicePresentationDTO.setQuantity(bookingService.getQuantity());
+        return bookingServicePresentationDTO;
     }
 }

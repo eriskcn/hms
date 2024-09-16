@@ -1,14 +1,17 @@
 package com.example.hms.service.implementation;
 
-import com.example.hms.dto.BookingDTO;
-import com.example.hms.dto.BookingPresentationDTO;
+import com.example.hms.dto.booking.BookingDTO;
+import com.example.hms.dto.booking.BookingDetailsDTO;
+import com.example.hms.dto.booking.BookingPresentationDTO;
+import com.example.hms.dto.bookingservice.BookingServiceInnerDTO;
 import com.example.hms.entity.Booking;
 import com.example.hms.entity.Guest;
 import com.example.hms.entity.Room;
 import com.example.hms.repository.BookingRepository;
+import com.example.hms.repository.BookingServiceRepository;
 import com.example.hms.repository.GuestRepository;
 import com.example.hms.repository.RoomRepository;
-import com.example.hms.service.BookingService;
+import com.example.hms.entity.BookingService;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.hms.exception.ResourceNotFoundException;
@@ -23,16 +26,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class BookingServiceImplementation implements BookingService {
+public class BookingServiceImplementation implements com.example.hms.service.BookingService {
     private final BookingRepository bookingRepository;
     private final GuestRepository guestRepository;
     private final RoomRepository roomRepository;
+    private final BookingServiceRepository bookingServiceRepository;
 
     @Autowired
-    public BookingServiceImplementation(BookingRepository bookingRepository, GuestRepository guestRepository, RoomRepository roomRepository) {
+    public BookingServiceImplementation(BookingRepository bookingRepository, GuestRepository guestRepository, RoomRepository roomRepository, BookingServiceRepository bookingServiceRepository) {
         this.bookingRepository = bookingRepository;
         this.guestRepository = guestRepository;
         this.roomRepository = roomRepository;
+        this.bookingServiceRepository = bookingServiceRepository;
     }
 
     @Override
@@ -77,11 +82,11 @@ public class BookingServiceImplementation implements BookingService {
     }
 
     @Override
-    public BookingPresentationDTO getBookingById(Long id) {
+    public BookingDetailsDTO getBookingById(Long id) {
         Booking booking = bookingRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Booking not found on::" + id)
         );
-        return mapToPresentationDTO(booking);
+        return mapToDetailsDTO(booking);
     }
 
     @Override
@@ -145,14 +150,27 @@ public class BookingServiceImplementation implements BookingService {
         return new BookingPresentationDTO(booking.getId(), booking.getGuest(), booking.getRoom(), booking.getCheckIn(), booking.getCheckOut(), booking.getIsPreBooking(), booking.getAmount());
     }
 
-    private Booking mapToEntity(BookingPresentationDTO bookingPresentationDTO) {
-        Booking booking = new Booking();
-        booking.setGuest(bookingPresentationDTO.getGuest());
-        booking.setRoom(bookingPresentationDTO.getRoom());
-        booking.setCheckIn(bookingPresentationDTO.getCheckIn());
-        booking.setCheckOut(bookingPresentationDTO.getCheckOut());
-        booking.setIsPreBooking(bookingPresentationDTO.getIsPreBooking());
-        booking.setAmount(bookingPresentationDTO.getAmount());
-        return booking;
+    private BookingDetailsDTO mapToDetailsDTO(Booking booking) {
+        BookingDetailsDTO bookingDetailsDTO = new BookingDetailsDTO();
+        bookingDetailsDTO.setId(booking.getId());
+        bookingDetailsDTO.setGuest(booking.getGuest());
+        bookingDetailsDTO.setRoom(booking.getRoom());
+        bookingDetailsDTO.setCheckIn(booking.getCheckIn());
+        bookingDetailsDTO.setCheckOut(booking.getCheckOut());
+        bookingDetailsDTO.setIsPreBooking(booking.getIsPreBooking());
+        bookingDetailsDTO.setAmount(booking.getAmount());
+
+        List<BookingService> services = bookingServiceRepository.findByBookingIdAndIsDeletedFalse(booking.getId());
+        List<BookingServiceInnerDTO> serviceInnerDTOS = services.stream().map(this::mapToInnerDTO).collect(Collectors.toList());
+        bookingDetailsDTO.setServices(serviceInnerDTOS);
+        return bookingDetailsDTO;
+    }
+
+    private BookingServiceInnerDTO mapToInnerDTO(BookingService bookingService) {
+        BookingServiceInnerDTO bookingServiceInnerDTO = new BookingServiceInnerDTO();
+        bookingServiceInnerDTO.setId(bookingService.getId());
+        bookingServiceInnerDTO.setService(bookingService.getService());
+        bookingServiceInnerDTO.setQuantity(bookingService.getQuantity());
+        return bookingServiceInnerDTO;
     }
 }

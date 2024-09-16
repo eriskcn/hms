@@ -19,17 +19,17 @@ public class Guest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "id_card", length = 12, nullable = false)
     private String idCard;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "gender", nullable = false)
     private Gender gender;
 
-    @Column(length = 15)
+    @Column(name = "phone", length = 15)
     private String phone;
 
     @Column(name = "total_amount", precision = 10, scale = 2, nullable = false)

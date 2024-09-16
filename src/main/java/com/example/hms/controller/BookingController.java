@@ -1,7 +1,8 @@
 package com.example.hms.controller;
 
-import com.example.hms.dto.BookingDTO;
-import com.example.hms.dto.BookingPresentationDTO;
+import com.example.hms.dto.booking.BookingDTO;
+import com.example.hms.dto.booking.BookingDetailsDTO;
+import com.example.hms.dto.booking.BookingPresentationDTO;
 import com.example.hms.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,9 +31,9 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookingPresentationDTO> getBookingById(@PathVariable("id") Long id) {
-        BookingPresentationDTO bookingPresentationDTO = bookingService.getBookingById(id);
-        return ResponseEntity.ok(bookingPresentationDTO);
+    public ResponseEntity<BookingDetailsDTO> getBookingById(@PathVariable("id") Long id) {
+        BookingDetailsDTO bookingDetailsDTO = bookingService.getBookingById(id);
+        return ResponseEntity.ok(bookingDetailsDTO);
     }
 
     @PostMapping

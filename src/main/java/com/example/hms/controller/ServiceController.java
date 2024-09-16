@@ -1,6 +1,6 @@
 package com.example.hms.controller;
 
-import com.example.hms.dto.ServiceDTO;
+import com.example.hms.dto.service.ServiceDTO;
 import com.example.hms.service.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

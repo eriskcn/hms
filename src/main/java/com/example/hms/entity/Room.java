@@ -20,18 +20,18 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 5)
+    @Column(name = "number", nullable = false, length = 5)
     private String number;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "type", nullable = false)
     private Type type;
 
-    @Column(precision = 10, scale = 2, nullable = false)
+    @Column(name = "price", precision = 10, scale = 2, nullable = false)
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false)
     private Status status = Status.AVAILABLE;
 
     @Column(name = "is_deleted", nullable = false)

@@ -27,11 +27,11 @@ public class Service {
     @Column(name = "category", nullable = false)
     private Category category;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false)
     private Status status = Status.AVAILABLE;
 
     @Column(nullable = false, name = "is_deleted")

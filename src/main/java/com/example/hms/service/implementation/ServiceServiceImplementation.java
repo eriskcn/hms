@@ -1,6 +1,6 @@
 package com.example.hms.service.implementation;
 
-import com.example.hms.dto.ServiceDTO;
+import com.example.hms.dto.service.ServiceDTO;
 import com.example.hms.entity.Service;
 import com.example.hms.repository.ServiceRepository;
 import com.example.hms.service.ServiceService;

@@ -1,15 +1,14 @@
 package com.example.hms.service;
 
-import com.example.hms.dto.BookingServiceDTO;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
-import org.springframework.data.domain.Page;
+import com.example.hms.dto.bookingservice.BookingServiceDTO;
+import com.example.hms.dto.bookingservice.BookingServicePresentationDTO;
 
 import java.util.List;
 
 public interface BookingServiceService {
-    List<BookingServiceDTO> getAllBookingServices();
+    List<BookingServicePresentationDTO> getAllBookingServices();
 
-    BookingServiceDTO getBookingServiceById(Long id);
+    BookingServicePresentationDTO getBookingServiceById(Long id);
 
     BookingServiceDTO createBookingService(BookingServiceDTO bookingServiceDTO);
 

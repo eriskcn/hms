@@ -25,6 +25,9 @@ public class BookingService {
     @JoinColumn(name = "service_id", nullable = false)
     private Service service;
 
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity = 1;
+
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = Boolean.FALSE;
 

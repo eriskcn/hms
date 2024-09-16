@@ -1,5 +1,6 @@
-package com.example.hms.dto;
+package com.example.hms.dto.booking;
 
+import com.example.hms.entity.Room;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,10 +11,9 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookingDTO {
+public class BookingInnerDTO {
     private Long id;
-    private Long guestId;
-    private Long roomId;
+    private Room room;
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
     private Boolean isPreBooking;

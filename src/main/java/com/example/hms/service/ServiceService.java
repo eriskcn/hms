@@ -1,6 +1,6 @@
 package com.example.hms.service;
 
-import com.example.hms.dto.ServiceDTO;
+import com.example.hms.dto.service.ServiceDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

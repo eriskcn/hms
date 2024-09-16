@@ -1,8 +1,12 @@
 package com.example.hms.service.implementation;
 
-import com.example.hms.dto.GuestDTO;
+import com.example.hms.dto.booking.BookingInnerDTO;
+import com.example.hms.dto.guest.GuestDTO;
+import com.example.hms.dto.guest.GuestDetailsDTO;
+import com.example.hms.entity.Booking;
 import com.example.hms.entity.Guest;
 import com.example.hms.exception.ResourceNotFoundException;
+import com.example.hms.repository.BookingRepository;
 import com.example.hms.repository.GuestRepository;
 import com.example.hms.service.GuestService;
 import jakarta.persistence.criteria.Predicate;
@@ -15,14 +19,17 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GuestServiceImplementation implements GuestService {
     private final GuestRepository guestRepository;
+    private final BookingRepository bookingRepository;
 
     @Autowired
-    public GuestServiceImplementation(GuestRepository guestRepository) {
+    public GuestServiceImplementation(GuestRepository guestRepository, BookingRepository bookingRepository) {
         this.guestRepository = guestRepository;
+        this.bookingRepository = bookingRepository;
     }
 
     @Override
@@ -72,11 +79,11 @@ public class GuestServiceImplementation implements GuestService {
     }
 
     @Override
-    public GuestDTO getGuestById(Long id) {
+    public GuestDetailsDTO getGuestById(Long id) {
         Guest guest = guestRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Guest not found on::" + id)
         );
-        return mapToDTO(guest);
+        return mapToDetailsDTO(guest);
     }
 
     @Override
@@ -113,5 +120,31 @@ public class GuestServiceImplementation implements GuestService {
         guest.setPhone(guestDTO.getPhone());
         guest.setTotalAmount(guestDTO.getTotalAmount());
         return guest;
+    }
+
+    private GuestDetailsDTO mapToDetailsDTO(Guest guest) {
+        GuestDetailsDTO guestDetailsDTO = new GuestDetailsDTO();
+        guestDetailsDTO.setId(guest.getId());
+        guestDetailsDTO.setName(guest.getName());
+        guestDetailsDTO.setIdCard(guest.getIdCard());
+        guestDetailsDTO.setGender(guest.getGender());
+        guestDetailsDTO.setPhone(guest.getPhone());
+        guestDetailsDTO.setTotalAmount(guest.getTotalAmount());
+
+        List<Booking> bookings = bookingRepository.findByGuestIdAndIsDeletedFalse(guest.getId());
+        List<BookingInnerDTO> bookingInnerDTOS = bookings.stream().map(this::mapToInnerDTO).collect(Collectors.toList());
+        guestDetailsDTO.setBookings(bookingInnerDTOS);
+        return guestDetailsDTO;
+    }
+
+    private BookingInnerDTO mapToInnerDTO(Booking booking) {
+        BookingInnerDTO bookingInnerDTO = new BookingInnerDTO();
+        bookingInnerDTO.setId(booking.getId());
+        bookingInnerDTO.setRoom(booking.getRoom());
+        bookingInnerDTO.setCheckIn(booking.getCheckIn());
+        bookingInnerDTO.setCheckOut(booking.getCheckOut());
+        bookingInnerDTO.setIsPreBooking(booking.getIsPreBooking());
+        bookingInnerDTO.setAmount(booking.getAmount());
+        return bookingInnerDTO;
     }
 }

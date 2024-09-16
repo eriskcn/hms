@@ -1,6 +1,7 @@
 package com.example.hms.controller;
 
-import com.example.hms.dto.GuestDTO;
+import com.example.hms.dto.guest.GuestDTO;
+import com.example.hms.dto.guest.GuestDetailsDTO;
 import com.example.hms.service.GuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,9 +31,9 @@ public class GuestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GuestDTO> getGuestById(@PathVariable Long id) {
-        GuestDTO guest = guestService.getGuestById(id);
-        return ResponseEntity.ok(guest);
+    public ResponseEntity<GuestDetailsDTO> getGuestById(@PathVariable Long id) {
+        GuestDetailsDTO guestDetailsDTO = guestService.getGuestById(id);
+        return ResponseEntity.ok(guestDetailsDTO);
     }
 
     @PostMapping

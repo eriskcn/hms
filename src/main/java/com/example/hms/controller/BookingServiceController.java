@@ -1,6 +1,7 @@
 package com.example.hms.controller;
 
-import com.example.hms.dto.BookingServiceDTO;
+import com.example.hms.dto.bookingservice.BookingServiceDTO;
+import com.example.hms.dto.bookingservice.BookingServicePresentationDTO;
 import com.example.hms.service.BookingServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,14 +21,14 @@ public class BookingServiceController {
     }
 
     @GetMapping
-    public List<BookingServiceDTO> getAllBookingService() {
+    public List<BookingServicePresentationDTO> getAllBookingService() {
         return bookingServiceService.getAllBookingServices();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookingServiceDTO> getBookingServiceById(@PathVariable("id") Long id) {
-        BookingServiceDTO bookingServiceDTO = bookingServiceService.getBookingServiceById(id);
-        return ResponseEntity.ok(bookingServiceDTO);
+    public ResponseEntity<BookingServicePresentationDTO> getBookingServiceById(@PathVariable("id") Long id) {
+        BookingServicePresentationDTO bookingServicePresentationDTO = bookingServiceService.getBookingServiceById(id);
+        return ResponseEntity.ok(bookingServicePresentationDTO);
     }
 
     @PostMapping
