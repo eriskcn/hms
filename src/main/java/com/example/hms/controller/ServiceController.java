@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/hms/services")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ServiceController {
     private final ServiceService serviceService;
 

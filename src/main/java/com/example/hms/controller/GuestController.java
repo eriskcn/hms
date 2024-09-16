@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/hms/guests")
+@CrossOrigin(origins = "http://localhost:3000")
 public class GuestController {
     private final GuestService guestService;
 

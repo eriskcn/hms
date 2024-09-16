@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/hms/rooms")
+@CrossOrigin(origins = "http://localhost:3000")
 public class RoomController {
     private final RoomService roomService;
 
