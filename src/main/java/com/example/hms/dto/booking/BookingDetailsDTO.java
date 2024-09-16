@@ -1,8 +1,8 @@
 package com.example.hms.dto.booking;
 
 import com.example.hms.dto.bookingservice.BookingServiceInnerDTO;
-import com.example.hms.entity.Guest;
-import com.example.hms.entity.Room;
+import com.example.hms.dto.guest.GuestInnerDTO;
+import com.example.hms.dto.room.RoomInnerDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,8 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 public class BookingDetailsDTO {
     private Long id;
-    private Guest guest;
-    private Room room;
+    private GuestInnerDTO guest;
+    private RoomInnerDTO room;
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
     private Boolean isPreBooking;

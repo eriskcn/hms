@@ -3,8 +3,10 @@ package com.example.hms.service.implementation;
 import com.example.hms.dto.booking.BookingInnerDTO;
 import com.example.hms.dto.guest.GuestDTO;
 import com.example.hms.dto.guest.GuestDetailsDTO;
+import com.example.hms.dto.room.RoomInnerDTO;
 import com.example.hms.entity.Booking;
 import com.example.hms.entity.Guest;
+import com.example.hms.entity.Room;
 import com.example.hms.exception.ResourceNotFoundException;
 import com.example.hms.repository.BookingRepository;
 import com.example.hms.repository.GuestRepository;
@@ -140,11 +142,20 @@ public class GuestServiceImplementation implements GuestService {
     private BookingInnerDTO mapToInnerDTO(Booking booking) {
         BookingInnerDTO bookingInnerDTO = new BookingInnerDTO();
         bookingInnerDTO.setId(booking.getId());
-        bookingInnerDTO.setRoom(booking.getRoom());
+        bookingInnerDTO.setRoom(mapToInnerDTO(booking.getRoom()));
         bookingInnerDTO.setCheckIn(booking.getCheckIn());
         bookingInnerDTO.setCheckOut(booking.getCheckOut());
         bookingInnerDTO.setIsPreBooking(booking.getIsPreBooking());
         bookingInnerDTO.setAmount(booking.getAmount());
         return bookingInnerDTO;
+    }
+
+    private RoomInnerDTO mapToInnerDTO(Room room) {
+        RoomInnerDTO roomInnerDTO = new RoomInnerDTO();
+        roomInnerDTO.setId(room.getId());
+        roomInnerDTO.setNumber(room.getNumber());
+        roomInnerDTO.setType(room.getType());
+        roomInnerDTO.setPrice(room.getPrice());
+        return roomInnerDTO;
     }
 }

@@ -4,6 +4,9 @@ import com.example.hms.dto.booking.BookingDTO;
 import com.example.hms.dto.booking.BookingDetailsDTO;
 import com.example.hms.dto.booking.BookingPresentationDTO;
 import com.example.hms.dto.bookingservice.BookingServiceInnerDTO;
+import com.example.hms.dto.guest.GuestInnerDTO;
+import com.example.hms.dto.room.RoomInnerDTO;
+import com.example.hms.dto.service.ServiceInnerDTO;
 import com.example.hms.entity.Booking;
 import com.example.hms.entity.Guest;
 import com.example.hms.entity.Room;
@@ -12,6 +15,7 @@ import com.example.hms.repository.BookingServiceRepository;
 import com.example.hms.repository.GuestRepository;
 import com.example.hms.repository.RoomRepository;
 import com.example.hms.entity.BookingService;
+import com.example.hms.entity.Service;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.hms.exception.ResourceNotFoundException;
@@ -19,13 +23,13 @@ import com.example.hms.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@org.springframework.stereotype.Service
 public class BookingServiceImplementation implements com.example.hms.service.BookingService {
     private final BookingRepository bookingRepository;
     private final GuestRepository guestRepository;
@@ -147,14 +151,14 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
     }
 
     private BookingPresentationDTO mapToPresentationDTO(Booking booking) {
-        return new BookingPresentationDTO(booking.getId(), booking.getGuest(), booking.getRoom(), booking.getCheckIn(), booking.getCheckOut(), booking.getIsPreBooking(), booking.getAmount());
+        return new BookingPresentationDTO(booking.getId(), mapToInnerDTO(booking.getGuest()), mapToInnerDTO(booking.getRoom()), booking.getCheckIn(), booking.getCheckOut(), booking.getIsPreBooking(), booking.getAmount());
     }
 
     private BookingDetailsDTO mapToDetailsDTO(Booking booking) {
         BookingDetailsDTO bookingDetailsDTO = new BookingDetailsDTO();
         bookingDetailsDTO.setId(booking.getId());
-        bookingDetailsDTO.setGuest(booking.getGuest());
-        bookingDetailsDTO.setRoom(booking.getRoom());
+        bookingDetailsDTO.setGuest(mapToInnerDTO(booking.getGuest()));
+        bookingDetailsDTO.setRoom(mapToInnerDTO(booking.getRoom()));
         bookingDetailsDTO.setCheckIn(booking.getCheckIn());
         bookingDetailsDTO.setCheckOut(booking.getCheckOut());
         bookingDetailsDTO.setIsPreBooking(booking.getIsPreBooking());
@@ -169,8 +173,36 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
     private BookingServiceInnerDTO mapToInnerDTO(BookingService bookingService) {
         BookingServiceInnerDTO bookingServiceInnerDTO = new BookingServiceInnerDTO();
         bookingServiceInnerDTO.setId(bookingService.getId());
-        bookingServiceInnerDTO.setService(bookingService.getService());
+        bookingServiceInnerDTO.setService(mapToInnerDTO(bookingService.getService()));
         bookingServiceInnerDTO.setQuantity(bookingService.getQuantity());
         return bookingServiceInnerDTO;
+    }
+
+    private GuestInnerDTO mapToInnerDTO(Guest guest) {
+        GuestInnerDTO guestInnerDTO = new GuestInnerDTO();
+        guestInnerDTO.setId(guest.getId());
+        guestInnerDTO.setName(guest.getName());
+        guestInnerDTO.setIdCard(guest.getIdCard());
+        guestInnerDTO.setGender(guest.getGender());
+        guestInnerDTO.setPhone(guest.getPhone());
+        return guestInnerDTO;
+    }
+
+    private RoomInnerDTO mapToInnerDTO(Room room) {
+        RoomInnerDTO roomInnerDTO = new RoomInnerDTO();
+        roomInnerDTO.setId(room.getId());
+        roomInnerDTO.setNumber(room.getNumber());
+        roomInnerDTO.setType(room.getType());
+        roomInnerDTO.setPrice(room.getPrice());
+        return roomInnerDTO;
+    }
+
+    private ServiceInnerDTO mapToInnerDTO(Service service) {
+        ServiceInnerDTO serviceInnerDTO = new ServiceInnerDTO();
+        serviceInnerDTO.setId(service.getId());
+        serviceInnerDTO.setName(service.getName());
+        serviceInnerDTO.setCategory(service.getCategory());
+        serviceInnerDTO.setPrice(service.getPrice());
+        return serviceInnerDTO;
     }
 }

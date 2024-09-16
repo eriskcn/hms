@@ -1,6 +1,6 @@
 package com.example.hms.dto.bookingservice;
 
-import com.example.hms.entity.Service;
+import com.example.hms.dto.service.ServiceInnerDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BookingServiceInnerDTO {
     private Long id;
-    private Service service;
+    private ServiceInnerDTO service;
     private Integer quantity;
 }
