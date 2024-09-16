@@ -97,7 +97,6 @@ public class GuestServiceImplementation implements GuestService {
         guest.setIdCard(guestDTO.getIdCard());
         guest.setGender(guestDTO.getGender());
         guest.setPhone(guestDTO.getPhone());
-        guest.setTotalAmount(guestDTO.getTotalAmount());
         return mapToDTO(guestRepository.save(guest));
     }
 
@@ -111,7 +110,7 @@ public class GuestServiceImplementation implements GuestService {
     }
 
     private GuestDTO mapToDTO(Guest guest) {
-        return new GuestDTO(guest.getId(), guest.getName(), guest.getIdCard(), guest.getGender(), guest.getPhone(), guest.getTotalAmount());
+        return new GuestDTO(guest.getId(), guest.getName(), guest.getIdCard(), guest.getGender(), guest.getPhone());
     }
 
     private Guest mapToEntity(GuestDTO guestDTO) {
@@ -120,7 +119,6 @@ public class GuestServiceImplementation implements GuestService {
         guest.setIdCard(guestDTO.getIdCard());
         guest.setGender(guestDTO.getGender());
         guest.setPhone(guestDTO.getPhone());
-        guest.setTotalAmount(guestDTO.getTotalAmount());
         return guest;
     }
 
