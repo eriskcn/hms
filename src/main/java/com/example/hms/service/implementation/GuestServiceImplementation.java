@@ -1,6 +1,7 @@
 package com.example.hms.service.implementation;
 
 import com.example.hms.dto.booking.BookingInnerDTO;
+import com.example.hms.dto.guest.GuestCreateDTO;
 import com.example.hms.dto.guest.GuestDTO;
 import com.example.hms.dto.guest.GuestDetailsDTO;
 import com.example.hms.dto.room.RoomInnerDTO;
@@ -35,10 +36,10 @@ public class GuestServiceImplementation implements GuestService {
     }
 
     @Override
-    public GuestDTO createGuest(GuestDTO guestDTO) {
-        Guest guest = mapToEntity(guestDTO);
+    public GuestCreateDTO createGuest(GuestCreateDTO guestCreateDTO) {
+        Guest guest = mapToEntity(guestCreateDTO);
         guest = guestRepository.save(guest);
-        return mapToDTO(guest);
+        return mapToCreateDTO(guest);
     }
 
     @Override
@@ -110,15 +111,19 @@ public class GuestServiceImplementation implements GuestService {
     }
 
     private GuestDTO mapToDTO(Guest guest) {
-        return new GuestDTO(guest.getId(), guest.getName(), guest.getIdCard(), guest.getGender(), guest.getPhone());
+        return new GuestDTO(guest.getId(), guest.getName(), guest.getIdCard(), guest.getGender(), guest.getPhone(), guest.getTotalAmount());
     }
 
-    private Guest mapToEntity(GuestDTO guestDTO) {
+    private GuestCreateDTO mapToCreateDTO(Guest guest) {
+        return new GuestCreateDTO(guest.getId(), guest.getName(), guest.getIdCard(), guest.getGender(), guest.getPhone());
+    }
+
+    private Guest mapToEntity(GuestCreateDTO guestCreateDTO) {
         Guest guest = new Guest();
-        guest.setName(guestDTO.getName());
-        guest.setIdCard(guestDTO.getIdCard());
-        guest.setGender(guestDTO.getGender());
-        guest.setPhone(guestDTO.getPhone());
+        guest.setName(guestCreateDTO.getName());
+        guest.setIdCard(guestCreateDTO.getIdCard());
+        guest.setGender(guestCreateDTO.getGender());
+        guest.setPhone(guestCreateDTO.getPhone());
         return guest;
     }
 

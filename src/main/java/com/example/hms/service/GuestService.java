@@ -1,5 +1,6 @@
 package com.example.hms.service;
 
+import com.example.hms.dto.guest.GuestCreateDTO;
 import com.example.hms.dto.guest.GuestDTO;
 import com.example.hms.dto.guest.GuestDetailsDTO;
 import org.springframework.data.domain.Page;
@@ -10,7 +11,7 @@ public interface GuestService {
 
     GuestDetailsDTO getGuestById(Long id);
 
-    GuestDTO createGuest(GuestDTO guestDTO);
+    GuestCreateDTO createGuest(GuestCreateDTO guestCreateDTO);
 
     GuestDTO updateGuest(Long id, GuestDTO guestDTO);
 
