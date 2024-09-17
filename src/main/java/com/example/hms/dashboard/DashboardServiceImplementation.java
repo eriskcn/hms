@@ -1,5 +1,6 @@
 package com.example.hms.dashboard;
 
+import com.example.hms.dto.booking.BookingPresentationDTO;
 import com.example.hms.dto.bookingservice.BookingServiceInnerDTO;
 import com.example.hms.dto.guest.GuestInnerDTO;
 import com.example.hms.dto.room.RoomInnerDTO;
@@ -11,12 +12,15 @@ import com.example.hms.entity.Room;
 import com.example.hms.entity.Service;
 import com.example.hms.repository.BookingRepository;
 import com.example.hms.repository.BookingServiceRepository;
+import com.example.hms.repository.GuestRepository;
+import com.example.hms.repository.RoomRepository;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import com.example.hms.exception.ResourceNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,11 +30,15 @@ import java.util.List;
 public class DashboardServiceImplementation implements DashboardService {
     private final BookingRepository bookingRepository;
     private final BookingServiceRepository bookingServiceRepository;
+    private final GuestRepository guestRepository;
+    private final RoomRepository roomRepository;
 
     @Autowired
-    public DashboardServiceImplementation(BookingRepository bookingRepository, BookingServiceRepository bookingServiceRepository) {
+    public DashboardServiceImplementation(BookingRepository bookingRepository, BookingServiceRepository bookingServiceRepository, GuestRepository guestRepository, RoomRepository roomRepository) {
         this.bookingRepository = bookingRepository;
         this.bookingServiceRepository = bookingServiceRepository;
+        this.guestRepository = guestRepository;
+        this.roomRepository = roomRepository;
     }
 
     public Page<OccupiedRoomDTO> getOccupiedRooms(String search, Pageable pageable) {
@@ -66,6 +74,25 @@ public class DashboardServiceImplementation implements DashboardService {
         }
 
         return new PageImpl<>(occupiedRoomDTOList, pageable, bookingPage.getTotalElements());
+    }
+
+    @Override
+    public BookingPresentationDTO checkInGuest(CheckInDTO checkInDTO) {
+        Booking booking = new Booking();
+        booking.setGuest(guestRepository.findById(checkInDTO.getGuestId()).orElseThrow(
+                () -> new ResourceNotFoundException("Guest not found on::" + checkInDTO.getGuestId())
+        ));
+        booking.setRoom(roomRepository.findById(checkInDTO.getRoomId()).orElseThrow(
+                () -> new ResourceNotFoundException("Room not found on::" + checkInDTO.getRoomId())
+        ));
+        booking.setIsPreBooking(false);
+        bookingRepository.save(booking);
+        return mapToPresentationDTO(booking);
+    }
+
+    @Override
+    public void addRoomService(RoomServiceDTO roomServiceDTO) {
+
     }
 
     private OccupiedRoomDTO mapToDTO(Booking activeBooking) {
@@ -115,5 +142,9 @@ public class DashboardServiceImplementation implements DashboardService {
         serviceInnerDTO.setCategory(service.getCategory());
         serviceInnerDTO.setPrice(service.getPrice());
         return serviceInnerDTO;
+    }
+
+    private BookingPresentationDTO mapToPresentationDTO(Booking booking) {
+        return new BookingPresentationDTO(booking.getId(), mapToInnerDTO(booking.getGuest()), mapToInnerDTO(booking.getRoom()), booking.getCheckIn(), booking.getCheckOut(), booking.getIsPreBooking(), booking.getAmount());
     }
 }

@@ -1,5 +1,6 @@
 package com.example.hms.dashboard;
 
+import com.example.hms.dto.booking.BookingPresentationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,5 +23,10 @@ public class DashboardController {
             @RequestParam(required = false) String search,
             Pageable pageable) {
         return ResponseEntity.ok(dashboardService.getOccupiedRooms(search, pageable));
+    }
+
+    @PutMapping("/check-in")
+    public ResponseEntity<BookingPresentationDTO> checkInGuest(@RequestBody CheckInDTO checkInDTO) {
+        return ResponseEntity.ok(dashboardService.checkInGuest(checkInDTO));
     }
 }
