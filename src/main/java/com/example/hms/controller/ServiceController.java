@@ -1,6 +1,8 @@
 package com.example.hms.controller;
 
+import com.example.hms.dto.service.ServiceCreateDTO;
 import com.example.hms.dto.service.ServiceDTO;
+import com.example.hms.dto.service.ServiceUpdateDTO;
 import com.example.hms.service.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,14 +38,14 @@ public class ServiceController {
     }
 
     @PostMapping
-    public ResponseEntity<ServiceDTO> createService(@RequestBody ServiceDTO serviceDTO) {
-        ServiceDTO newService = serviceService.createService(serviceDTO);
+    public ResponseEntity<ServiceDTO> createService(@RequestBody ServiceCreateDTO serviceCreateDTO) {
+        ServiceDTO newService = serviceService.createService(serviceCreateDTO);
         return new ResponseEntity<>(newService, HttpStatus.CREATED);
     }
 
     @PutMapping("'/{id}")
-    public ResponseEntity<ServiceDTO> updateService(@PathVariable("id") Long id, @RequestBody ServiceDTO serviceDTO) {
-        ServiceDTO updatedService = serviceService.updateService(id, serviceDTO);
+    public ResponseEntity<ServiceDTO> updateService(@PathVariable("id") Long id, @RequestBody ServiceUpdateDTO serviceUpdateDTO) {
+        ServiceDTO updatedService = serviceService.updateService(id, serviceUpdateDTO);
         return ResponseEntity.ok(updatedService);
     }
 

@@ -1,6 +1,8 @@
 package com.example.hms.service.implementation;
 
+import com.example.hms.dto.room.RoomCreateDTO;
 import com.example.hms.dto.room.RoomDTO;
+import com.example.hms.dto.room.RoomUpdateDTO;
 import com.example.hms.entity.Room;
 import com.example.hms.repository.RoomRepository;
 import com.example.hms.service.RoomService;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.criteria.Predicate;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -25,13 +28,6 @@ public class RoomServiceImplementation implements RoomService {
     @Autowired
     public RoomServiceImplementation(RoomRepository roomRepository) {
         this.roomRepository = roomRepository;
-    }
-
-    @Override
-    public RoomDTO createRoom(RoomDTO roomDTO) {
-        Room room = mapToEntity(roomDTO);
-        room = roomRepository.save(room);
-        return mapToDTO(room);
     }
 
     @Override
@@ -79,18 +75,36 @@ public class RoomServiceImplementation implements RoomService {
     }
 
     @Override
-    public RoomDTO updateRoom(Long id, RoomDTO roomDTO) {
+    @Transactional
+    public RoomDTO createRoom(RoomCreateDTO roomCreateDTO) {
+        Room room = mapToEntity(roomCreateDTO);
+        room = roomRepository.save(room);
+        return mapToDTO(room);
+    }
+
+    @Override
+    @Transactional
+    public RoomDTO updateRoom(Long id, RoomUpdateDTO roomUpdateDTO) {
         Room room = roomRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Room not found on::" + id)
         );
-        room.setNumber(roomDTO.getNumber());
-        room.setType(roomDTO.getType());
-        room.setPrice(roomDTO.getPrice());
-        room.setStatus(roomDTO.getStatus());
+        if (roomUpdateDTO.getNumber() != null) {
+            room.setNumber(roomUpdateDTO.getNumber());
+        }
+        if (roomUpdateDTO.getType() != null) {
+            room.setType(roomUpdateDTO.getType());
+        }
+        if (roomUpdateDTO.getPrice() != null) {
+            room.setPrice(roomUpdateDTO.getPrice());
+        }
+        if (roomUpdateDTO.getStatus() != null) {
+            room.setStatus(roomUpdateDTO.getStatus());
+        }
         return mapToDTO(roomRepository.save(room));
     }
 
     @Override
+    @Transactional
     public void deleteRoom(Long id) {
         Room room = roomRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Room not found on::" + id)
@@ -103,12 +117,11 @@ public class RoomServiceImplementation implements RoomService {
         return new RoomDTO(room.getId(), room.getNumber(), room.getType(), room.getPrice(), room.getStatus());
     }
 
-    private Room mapToEntity(RoomDTO roomDTO) {
+    private Room mapToEntity(RoomCreateDTO roomCreateDTO) {
         Room room = new Room();
-        room.setNumber(roomDTO.getNumber());
-        room.setType(roomDTO.getType());
-        room.setPrice(roomDTO.getPrice());
-        room.setStatus(roomDTO.getStatus());
+        room.setNumber(roomCreateDTO.getNumber());
+        room.setType(roomCreateDTO.getType());
+        room.setPrice(roomCreateDTO.getPrice());
         return room;
     }
 }

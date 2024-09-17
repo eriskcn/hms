@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GuestCreateDTO {
+public class GuestUpdateDTO {
     private String name;
     private String idCard;
     private Gender gender;

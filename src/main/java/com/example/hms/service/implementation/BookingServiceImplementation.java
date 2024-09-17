@@ -1,9 +1,6 @@
 package com.example.hms.service.implementation;
 
-import com.example.hms.dto.booking.BookingCreateDTO;
-import com.example.hms.dto.booking.BookingDTO;
-import com.example.hms.dto.booking.BookingDetailsDTO;
-import com.example.hms.dto.booking.BookingPresentationDTO;
+import com.example.hms.dto.booking.*;
 import com.example.hms.dto.bookingservice.BookingServiceInnerDTO;
 import com.example.hms.dto.guest.GuestInnerDTO;
 import com.example.hms.dto.room.RoomInnerDTO;
@@ -24,6 +21,7 @@ import com.example.hms.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.ArrayList;
@@ -100,33 +98,46 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
 
     // for add pre-booking
     @Override
-    public BookingCreateDTO createBooking(BookingCreateDTO bookingCreateDTO) {
+    @Transactional
+    public BookingDTO createBooking(BookingCreateDTO bookingCreateDTO) {
         Booking booking = mapToEntity(bookingCreateDTO);
-        return mapToCreateDTO(bookingRepository.save(booking));
-    }
-
-    @Override
-    public BookingDTO updateBooking(Long id, BookingDTO bookingDTO) {
-        Booking booking = bookingRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Booking not found on::" + id)
-        );
-
-        Guest guest = guestRepository.findById(bookingDTO.getGuestId()).orElseThrow(
-                () -> new ResourceNotFoundException("Guest not found on::" + bookingDTO.getGuestId())
-        );
-        Room room = roomRepository.findById(bookingDTO.getRoomId()).orElseThrow(
-                () -> new ResourceNotFoundException("Room not found on::" + bookingDTO.getRoomId())
-        );
-        booking.setGuest(guest);
-        booking.setRoom(room);
-        booking.setCheckIn(bookingDTO.getCheckIn());
-        booking.setCheckOut(bookingDTO.getCheckOut());
-        booking.setIsPreBooking(bookingDTO.getIsPreBooking());
-        booking.setAmount(bookingDTO.getAmount());
         return mapToDTO(bookingRepository.save(booking));
     }
 
     @Override
+    @Transactional
+    public BookingDTO updateBooking(Long id, BookingUpdateDTO bookingUpdateDTO) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + id));
+
+        if (bookingUpdateDTO.getGuestId() != null) {
+            Guest guest = guestRepository.findById(bookingUpdateDTO.getGuestId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Guest not found with id: " + bookingUpdateDTO.getGuestId()));
+            booking.setGuest(guest);
+        }
+
+        if (bookingUpdateDTO.getRoomId() != null) {
+            Room room = roomRepository.findById(bookingUpdateDTO.getRoomId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Room not found with id: " + bookingUpdateDTO.getRoomId()));
+            booking.setRoom(room);
+        }
+
+        if (bookingUpdateDTO.getCheckIn() != null) {
+            booking.setCheckIn(bookingUpdateDTO.getCheckIn());
+        }
+
+        if (bookingUpdateDTO.getCheckOut() != null) {
+            booking.setCheckOut(bookingUpdateDTO.getCheckOut());
+        }
+
+        if (bookingUpdateDTO.getAmount() != null) {
+            booking.setAmount(bookingUpdateDTO.getAmount());
+        }
+        Booking updatedBooking = bookingRepository.save(booking);
+        return mapToDTO(updatedBooking);
+    }
+    @Override
+    @Transactional
     public void deleteBooking(Long id) {
         Booking booking = bookingRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Booking not found on::" + id)
@@ -193,10 +204,6 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
         serviceInnerDTO.setCategory(service.getCategory());
         serviceInnerDTO.setPrice(service.getPrice());
         return serviceInnerDTO;
-    }
-
-    private BookingCreateDTO mapToCreateDTO(Booking booking) {
-        return new BookingCreateDTO(booking.getId(), booking.getGuest().getId(), booking.getRoom().getId(), booking.getCheckIn(), booking.getCheckOut());
     }
 
     private Booking mapToEntity(BookingCreateDTO bookingCreateDTO) {

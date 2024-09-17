@@ -1,6 +1,8 @@
 package com.example.hms.service;
 
+import com.example.hms.dto.room.RoomCreateDTO;
 import com.example.hms.dto.room.RoomDTO;
+import com.example.hms.dto.room.RoomUpdateDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -9,9 +11,9 @@ public interface RoomService {
 
     RoomDTO getRoomById(Long id);
 
-    RoomDTO createRoom(RoomDTO roomDTO);
+    RoomDTO createRoom(RoomCreateDTO roomCreateDTO);
 
-    RoomDTO updateRoom(Long id, RoomDTO roomDTO);
+    RoomDTO updateRoom(Long id, RoomUpdateDTO roomUpdateDTO);
 
     void deleteRoom(Long id);
 }

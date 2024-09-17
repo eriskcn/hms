@@ -1,6 +1,8 @@
 package com.example.hms.service;
 
+import com.example.hms.dto.service.ServiceCreateDTO;
 import com.example.hms.dto.service.ServiceDTO;
+import com.example.hms.dto.service.ServiceUpdateDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -10,9 +12,9 @@ public interface ServiceService {
 
     ServiceDTO getServiceById(Long id);
 
-    ServiceDTO createService(ServiceDTO serviceDTO);
+    ServiceDTO createService(ServiceCreateDTO serviceCreateDTO);
 
-    ServiceDTO updateService(Long id, ServiceDTO serviceDTO);
+    ServiceDTO updateService(Long id, ServiceUpdateDTO serviceUpdateDTO);
 
     void deleteService(Long id);
 }

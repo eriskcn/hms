@@ -4,13 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookingCreateDTO {
+public class BookingUpdateDTO {
     private Long guestId;
     private Long roomId;
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
+    private BigDecimal amount;
 }

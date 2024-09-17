@@ -3,6 +3,7 @@ package com.example.hms.controller;
 import com.example.hms.dto.guest.GuestCreateDTO;
 import com.example.hms.dto.guest.GuestDTO;
 import com.example.hms.dto.guest.GuestDetailsDTO;
+import com.example.hms.dto.guest.GuestUpdateDTO;
 import com.example.hms.service.GuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,14 +40,14 @@ public class GuestController {
     }
 
     @PostMapping
-    public ResponseEntity<GuestCreateDTO> createGuest(@RequestBody GuestCreateDTO guestCreateDTO) {
-        GuestCreateDTO newGuest = guestService.createGuest(guestCreateDTO);
+    public ResponseEntity<GuestDTO> createGuest(@RequestBody GuestCreateDTO guestCreateDTO) {
+        GuestDTO newGuest = guestService.createGuest(guestCreateDTO);
         return new ResponseEntity<>(newGuest, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GuestDTO> updateGuest(@PathVariable Long id, @RequestBody GuestDTO guestDTO) {
-        GuestDTO updatedGuest = guestService.updateGuest(id, guestDTO);
+    public ResponseEntity<GuestDTO> updateGuest(@PathVariable Long id, @RequestBody GuestUpdateDTO guestUpdateDTO) {
+        GuestDTO updatedGuest = guestService.updateGuest(id, guestUpdateDTO);
         return ResponseEntity.ok(updatedGuest);
     }
 

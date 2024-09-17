@@ -1,9 +1,6 @@
 package com.example.hms.service;
 
-import com.example.hms.dto.booking.BookingCreateDTO;
-import com.example.hms.dto.booking.BookingDTO;
-import com.example.hms.dto.booking.BookingDetailsDTO;
-import com.example.hms.dto.booking.BookingPresentationDTO;
+import com.example.hms.dto.booking.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,9 +10,9 @@ public interface BookingService {
 
     BookingDetailsDTO getBookingById(Long id);
 
-    BookingCreateDTO createBooking(BookingCreateDTO bookingCreateDTO);
+    BookingDTO createBooking(BookingCreateDTO bookingCreateDTO);
 
-    BookingDTO updateBooking(Long id, BookingDTO bookingDTO);
+    BookingDTO updateBooking(Long id, BookingUpdateDTO bookingUpdateDTO);
 
     void deleteBooking(Long id);
 }

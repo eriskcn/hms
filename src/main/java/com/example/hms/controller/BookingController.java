@@ -1,9 +1,6 @@
 package com.example.hms.controller;
 
-import com.example.hms.dto.booking.BookingCreateDTO;
-import com.example.hms.dto.booking.BookingDTO;
-import com.example.hms.dto.booking.BookingDetailsDTO;
-import com.example.hms.dto.booking.BookingPresentationDTO;
+import com.example.hms.dto.booking.*;
 import com.example.hms.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,14 +36,14 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<BookingCreateDTO> createBooking(@RequestBody BookingCreateDTO bookingCreateDTO) {
-        BookingCreateDTO newBooking = bookingService.createBooking(bookingCreateDTO);
+    public ResponseEntity<BookingDTO> createBooking(@RequestBody BookingCreateDTO bookingCreateDTO) {
+        BookingDTO newBooking = bookingService.createBooking(bookingCreateDTO);
         return new ResponseEntity<>(newBooking, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookingDTO> updateBooking(@PathVariable("id") Long id, @RequestBody BookingDTO bookingDTO) {
-        BookingDTO updatedBooking = bookingService.updateBooking(id, bookingDTO);
+    public ResponseEntity<BookingDTO> updateBooking(@PathVariable("id") Long id, @RequestBody BookingUpdateDTO bookingUpdateDTO) {
+        BookingDTO updatedBooking = bookingService.updateBooking(id, bookingUpdateDTO);
         return ResponseEntity.ok(updatedBooking);
     }
 

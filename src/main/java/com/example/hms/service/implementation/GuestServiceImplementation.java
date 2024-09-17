@@ -4,6 +4,7 @@ import com.example.hms.dto.booking.BookingInnerDTO;
 import com.example.hms.dto.guest.GuestCreateDTO;
 import com.example.hms.dto.guest.GuestDTO;
 import com.example.hms.dto.guest.GuestDetailsDTO;
+import com.example.hms.dto.guest.GuestUpdateDTO;
 import com.example.hms.dto.room.RoomInnerDTO;
 import com.example.hms.entity.Booking;
 import com.example.hms.entity.Guest;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,13 +35,6 @@ public class GuestServiceImplementation implements GuestService {
     public GuestServiceImplementation(GuestRepository guestRepository, BookingRepository bookingRepository) {
         this.guestRepository = guestRepository;
         this.bookingRepository = bookingRepository;
-    }
-
-    @Override
-    public GuestCreateDTO createGuest(GuestCreateDTO guestCreateDTO) {
-        Guest guest = mapToEntity(guestCreateDTO);
-        guest = guestRepository.save(guest);
-        return mapToCreateDTO(guest);
     }
 
     @Override
@@ -90,14 +85,30 @@ public class GuestServiceImplementation implements GuestService {
     }
 
     @Override
-    public GuestDTO updateGuest(Long id, GuestDTO guestDTO) {
+    @Transactional
+    public GuestDTO createGuest(GuestCreateDTO guestCreateDTO) {
+        Guest guest = mapToEntity(guestCreateDTO);
+        guest = guestRepository.save(guest);
+        return mapToDTO(guest);
+    }
+
+    @Override
+    public GuestDTO updateGuest(Long id, GuestUpdateDTO guestUpdateDTO) {
         Guest guest = guestRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Guest not found on::" + id)
         );
-        guest.setName(guestDTO.getName());
-        guest.setIdCard(guestDTO.getIdCard());
-        guest.setGender(guestDTO.getGender());
-        guest.setPhone(guestDTO.getPhone());
+        if (guestUpdateDTO.getName() != null) {
+            guest.setName(guestUpdateDTO.getName());
+        }
+        if (guestUpdateDTO.getIdCard() != null) {
+            guest.setIdCard(guestUpdateDTO.getIdCard());
+        }
+        if (guestUpdateDTO.getGender() != null) {
+            guest.setGender(guestUpdateDTO.getGender());
+        }
+        if (guestUpdateDTO.getPhone() != null) {
+            guest.setPhone(guestUpdateDTO.getPhone());
+        }
         return mapToDTO(guestRepository.save(guest));
     }
 
@@ -112,10 +123,6 @@ public class GuestServiceImplementation implements GuestService {
 
     private GuestDTO mapToDTO(Guest guest) {
         return new GuestDTO(guest.getId(), guest.getName(), guest.getIdCard(), guest.getGender(), guest.getPhone(), guest.getTotalAmount());
-    }
-
-    private GuestCreateDTO mapToCreateDTO(Guest guest) {
-        return new GuestCreateDTO(guest.getId(), guest.getName(), guest.getIdCard(), guest.getGender(), guest.getPhone());
     }
 
     private Guest mapToEntity(GuestCreateDTO guestCreateDTO) {

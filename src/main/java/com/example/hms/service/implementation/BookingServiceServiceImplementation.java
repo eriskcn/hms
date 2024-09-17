@@ -1,6 +1,7 @@
 package com.example.hms.service.implementation;
 
 import com.example.hms.dto.booking.BookingInnerDTO;
+import com.example.hms.dto.bookingservice.BookingServiceCreateDTO;
 import com.example.hms.dto.bookingservice.BookingServiceDTO;
 import com.example.hms.dto.bookingservice.BookingServicePresentationDTO;
 import com.example.hms.dto.room.RoomInnerDTO;
@@ -15,6 +16,7 @@ import com.example.hms.repository.ServiceRepository;
 import com.example.hms.service.BookingServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.hms.exception.ResourceNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,12 +49,14 @@ public class BookingServiceServiceImplementation implements BookingServiceServic
     }
 
     @Override
-    public BookingServiceDTO createBookingService(BookingServiceDTO bookingServiceDTO) {
-        BookingService bookingService = mapToEntity(bookingServiceDTO);
+    @Transactional
+    public BookingServiceDTO createBookingService(BookingServiceCreateDTO bookingServiceCreateDTO) {
+        BookingService bookingService = mapToEntity(bookingServiceCreateDTO);
         return mapToDTO(bookingServiceRepository.save(bookingService));
     }
 
     @Override
+    @Transactional
     public BookingServiceDTO updateBookingService(Long id, BookingServiceDTO bookingServiceDTO) {
         BookingService bookingService = bookingServiceRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("BookingService not found on::" + id)
@@ -69,6 +73,7 @@ public class BookingServiceServiceImplementation implements BookingServiceServic
     }
 
     @Override
+    @Transactional
     public void deleteBookingService(Long id) {
         BookingService bookingService = bookingServiceRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("BookingService not found on::" + id)
@@ -81,16 +86,17 @@ public class BookingServiceServiceImplementation implements BookingServiceServic
         return new BookingServiceDTO(bookingService.getId(), bookingService.getBooking().getId(), bookingService.getService().getId(), bookingService.getQuantity());
     }
 
-    private BookingService mapToEntity(BookingServiceDTO bookingServiceDTO) {
+    private BookingService mapToEntity(BookingServiceCreateDTO bookingServiceCreateDTO) {
         BookingService bookingService = new BookingService();
-        Booking booking = bookingRepository.findById(bookingServiceDTO.getBookingId()).orElseThrow(
-                () -> new ResourceNotFoundException("Booking not found on::" + bookingServiceDTO.getBookingId())
+        Booking booking = bookingRepository.findById(bookingServiceCreateDTO.getBookingId()).orElseThrow(
+                () -> new ResourceNotFoundException("Booking not found on::" + bookingServiceCreateDTO.getBookingId())
         );
-        Service service = serviceRepository.findById(bookingServiceDTO.getServiceId()).orElseThrow(
-                () -> new ResourceNotFoundException("Service not found on::" + bookingServiceDTO.getServiceId())
+        Service service = serviceRepository.findById(bookingServiceCreateDTO.getServiceId()).orElseThrow(
+                () -> new ResourceNotFoundException("Service not found on::" + bookingServiceCreateDTO.getServiceId())
         );
         bookingService.setBooking(booking);
         bookingService.setService(service);
+        bookingService.setQuantity(bookingServiceCreateDTO.getQuantity());
         return bookingService;
     }
 

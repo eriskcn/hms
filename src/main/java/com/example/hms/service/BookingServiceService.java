@@ -1,5 +1,6 @@
 package com.example.hms.service;
 
+import com.example.hms.dto.bookingservice.BookingServiceCreateDTO;
 import com.example.hms.dto.bookingservice.BookingServiceDTO;
 import com.example.hms.dto.bookingservice.BookingServicePresentationDTO;
 
@@ -10,7 +11,7 @@ public interface BookingServiceService {
 
     BookingServicePresentationDTO getBookingServiceById(Long id);
 
-    BookingServiceDTO createBookingService(BookingServiceDTO bookingServiceDTO);
+    BookingServiceDTO createBookingService(BookingServiceCreateDTO bookingServiceCreateDTO);
 
     BookingServiceDTO updateBookingService(Long id, BookingServiceDTO bookingServiceDTO);
 

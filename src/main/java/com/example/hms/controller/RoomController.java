@@ -1,6 +1,8 @@
 package com.example.hms.controller;
 
+import com.example.hms.dto.room.RoomCreateDTO;
 import com.example.hms.dto.room.RoomDTO;
+import com.example.hms.dto.room.RoomUpdateDTO;
 import com.example.hms.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,14 +38,14 @@ public class RoomController {
     }
 
     @PostMapping
-    public ResponseEntity<RoomDTO> createRoom(@RequestBody RoomDTO roomDTO) {
-        RoomDTO newRoom = roomService.createRoom(roomDTO);
+    public ResponseEntity<RoomDTO> createRoom(@RequestBody RoomCreateDTO roomCreateDTO) {
+        RoomDTO newRoom = roomService.createRoom(roomCreateDTO);
         return new ResponseEntity<>(newRoom, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RoomDTO> updateRoom(@PathVariable("id") Long id, @RequestBody RoomDTO roomDTO) {
-        RoomDTO updatedRoom = roomService.updateRoom(id, roomDTO);
+    public ResponseEntity<RoomDTO> updateRoom(@PathVariable("id") Long id, @RequestBody RoomUpdateDTO roomUpdateDTO) {
+        RoomDTO updatedRoom = roomService.updateRoom(id, roomUpdateDTO);
         return ResponseEntity.ok(updatedRoom);
     }
 
