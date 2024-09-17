@@ -27,7 +27,7 @@ public class Booking {
     private Room room;
 
     @Column(name = "check_in", nullable = false)
-    private LocalDateTime checkIn;
+    private LocalDateTime checkIn = LocalDateTime.now();
 
     @Column(name = "check_out")
     private LocalDateTime checkOut;

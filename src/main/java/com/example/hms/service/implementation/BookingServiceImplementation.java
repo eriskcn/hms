@@ -210,6 +210,7 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
         booking.setRoom(room);
         booking.setCheckIn(bookingCreateDTO.getCheckIn());
         booking.setCheckOut(bookingCreateDTO.getCheckOut());
+        booking.setIsPreBooking(true);
         return booking;
     }
 }
