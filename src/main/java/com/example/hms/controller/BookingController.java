@@ -1,5 +1,6 @@
 package com.example.hms.controller;
 
+import com.example.hms.dto.booking.BookingCreateDTO;
 import com.example.hms.dto.booking.BookingDTO;
 import com.example.hms.dto.booking.BookingDetailsDTO;
 import com.example.hms.dto.booking.BookingPresentationDTO;
@@ -38,8 +39,8 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<BookingDTO> createBooking(@RequestBody BookingDTO bookingDTO) {
-        BookingDTO newBooking = bookingService.createBooking(bookingDTO);
+    public ResponseEntity<BookingCreateDTO> createBooking(@RequestBody BookingCreateDTO bookingCreateDTO) {
+        BookingCreateDTO newBooking = bookingService.createBooking(bookingCreateDTO);
         return new ResponseEntity<>(newBooking, HttpStatus.CREATED);
     }
 

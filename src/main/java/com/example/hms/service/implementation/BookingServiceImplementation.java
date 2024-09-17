@@ -1,5 +1,6 @@
 package com.example.hms.service.implementation;
 
+import com.example.hms.dto.booking.BookingCreateDTO;
 import com.example.hms.dto.booking.BookingDTO;
 import com.example.hms.dto.booking.BookingDetailsDTO;
 import com.example.hms.dto.booking.BookingPresentationDTO;
@@ -71,6 +72,10 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
                     case "checked-out":
                         predicates.add(criteriaBuilder.notEqual(root.get("checkOut"), null));
                         break;
+                    case "active":
+                        Predicate checkOutNull = criteriaBuilder.isNull(root.get("checkOut"));
+                        Predicate checkOutFuture = criteriaBuilder.greaterThan(root.get("checkOut"), criteriaBuilder.currentTimestamp());
+                        predicates.add(criteriaBuilder.or(checkOutNull, checkOutFuture));
                     default:
                         break;
                 }
@@ -94,9 +99,9 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
     }
 
     @Override
-    public BookingDTO createBooking(BookingDTO bookingDTO) {
-        Booking booking = mapToEntity(bookingDTO);
-        return mapToDTO(bookingRepository.save(booking));
+    public BookingCreateDTO createBooking(BookingCreateDTO bookingCreateDTO) {
+        Booking booking = mapToEntity(bookingCreateDTO);
+        return mapToCreateDTO(bookingRepository.save(booking));
     }
 
     @Override
@@ -131,23 +136,6 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
 
     private BookingDTO mapToDTO(Booking booking) {
         return new BookingDTO(booking.getId(), booking.getGuest().getId(), booking.getRoom().getId(), booking.getCheckIn(), booking.getCheckOut(), booking.getIsPreBooking(), booking.getAmount());
-    }
-
-    private Booking mapToEntity(BookingDTO bookingDTO) {
-        Booking booking = new Booking();
-        Guest guest = guestRepository.findById(bookingDTO.getGuestId()).orElseThrow(
-                () -> new ResourceNotFoundException("Guest not found on::" + bookingDTO.getGuestId())
-        );
-        Room room = roomRepository.findById(bookingDTO.getRoomId()).orElseThrow(
-                () -> new ResourceNotFoundException("Room not found on::" + bookingDTO.getRoomId())
-        );
-        booking.setGuest(guest);
-        booking.setRoom(room);
-        booking.setCheckIn(bookingDTO.getCheckIn());
-        booking.setCheckOut(bookingDTO.getCheckOut());
-        booking.setIsPreBooking(bookingDTO.getIsPreBooking());
-        booking.setAmount(bookingDTO.getAmount());
-        return booking;
     }
 
     private BookingPresentationDTO mapToPresentationDTO(Booking booking) {
@@ -204,5 +192,24 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
         serviceInnerDTO.setCategory(service.getCategory());
         serviceInnerDTO.setPrice(service.getPrice());
         return serviceInnerDTO;
+    }
+
+    private BookingCreateDTO mapToCreateDTO(Booking booking) {
+        return new BookingCreateDTO(booking.getId(), booking.getGuest().getId(), booking.getRoom().getId(), booking.getCheckIn(), booking.getCheckOut());
+    }
+
+    private Booking mapToEntity(BookingCreateDTO bookingCreateDTO) {
+        Booking booking = new Booking();
+        Guest guest = guestRepository.findById(bookingCreateDTO.getGuestId()).orElseThrow(
+                () -> new ResourceNotFoundException("Guest not found on::" + bookingCreateDTO.getGuestId())
+        );
+        Room room = roomRepository.findById(bookingCreateDTO.getRoomId()).orElseThrow(
+                () -> new ResourceNotFoundException("Room not found on::" + bookingCreateDTO.getRoomId())
+        );
+        booking.setGuest(guest);
+        booking.setRoom(room);
+        booking.setCheckIn(bookingCreateDTO.getCheckIn());
+        booking.setCheckOut(bookingCreateDTO.getCheckOut());
+        return booking;
     }
 }
