@@ -29,4 +29,10 @@ public class DashboardController {
     public ResponseEntity<BookingPresentationDTO> checkInGuest(@RequestBody CheckInDTO checkInDTO) {
         return ResponseEntity.ok(dashboardService.checkInGuest(checkInDTO));
     }
+
+    @PostMapping("/room-service")
+    public ResponseEntity<Void> addRoomService(@RequestBody RoomServiceDTO roomServiceDTO) {
+        dashboardService.addRoomService(roomServiceDTO);
+        return ResponseEntity.noContent().build();
+    }
 }
