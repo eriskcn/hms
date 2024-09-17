@@ -31,7 +31,11 @@ public class RoomServiceImplementation implements RoomService {
     }
 
     @Override
-    public Page<RoomDTO> getAllRooms(String search, String filterCriteria, Pageable pageable) {
+    public Page<RoomDTO> getAllRooms(
+            String search,
+            String filterCriteria,
+            Pageable pageable
+    ) {
         Specification<Room> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -114,7 +118,13 @@ public class RoomServiceImplementation implements RoomService {
     }
 
     private RoomDTO mapToDTO(Room room) {
-        return new RoomDTO(room.getId(), room.getNumber(), room.getType(), room.getPrice(), room.getStatus());
+        return new RoomDTO(
+                room.getId(),
+                room.getNumber(),
+                room.getType(),
+                room.getPrice(),
+                room.getStatus()
+        );
     }
 
     private Room mapToEntity(RoomCreateDTO roomCreateDTO) {

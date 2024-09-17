@@ -36,7 +36,12 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
     private final BookingServiceRepository bookingServiceRepository;
 
     @Autowired
-    public BookingServiceImplementation(BookingRepository bookingRepository, GuestRepository guestRepository, RoomRepository roomRepository, BookingServiceRepository bookingServiceRepository) {
+    public BookingServiceImplementation(
+            BookingRepository bookingRepository,
+            GuestRepository guestRepository,
+            RoomRepository roomRepository,
+            BookingServiceRepository bookingServiceRepository
+    ) {
         this.bookingRepository = bookingRepository;
         this.guestRepository = guestRepository;
         this.roomRepository = roomRepository;
@@ -147,11 +152,27 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
     }
 
     private BookingDTO mapToDTO(Booking booking) {
-        return new BookingDTO(booking.getId(), booking.getGuest().getId(), booking.getRoom().getId(), booking.getCheckIn(), booking.getCheckOut(), booking.getIsPreBooking(), booking.getAmount());
+        return new BookingDTO(
+                booking.getId(),
+                booking.getGuest().getId(),
+                booking.getRoom().getId(),
+                booking.getCheckIn(),
+                booking.getCheckOut(),
+                booking.getIsPreBooking(),
+                booking.getAmount()
+        );
     }
 
     private BookingPresentationDTO mapToPresentationDTO(Booking booking) {
-        return new BookingPresentationDTO(booking.getId(), mapToInnerDTO(booking.getGuest()), mapToInnerDTO(booking.getRoom()), booking.getCheckIn(), booking.getCheckOut(), booking.getIsPreBooking(), booking.getAmount());
+        return new BookingPresentationDTO(
+                booking.getId(),
+                mapToInnerDTO(booking.getGuest()),
+                mapToInnerDTO(booking.getRoom()),
+                booking.getCheckIn(),
+                booking.getCheckOut(),
+                booking.getIsPreBooking(),
+                booking.getAmount()
+        );
     }
 
     private BookingDetailsDTO mapToDetailsDTO(Booking booking) {

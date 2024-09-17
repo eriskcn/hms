@@ -8,7 +8,11 @@ import org.springframework.data.domain.Pageable;
 
 
 public interface ServiceService {
-    Page<ServiceDTO> getAllServices(String search, String filter, Pageable pageable);
+    Page<ServiceDTO> getAllServices(
+            String search,
+            String filter,
+            Pageable pageable
+    );
 
     ServiceDTO getServiceById(Long id);
 

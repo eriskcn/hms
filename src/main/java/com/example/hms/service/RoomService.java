@@ -7,7 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface RoomService {
-    Page<RoomDTO> getAllRooms(String search, String filterCriteria, Pageable pageable);
+    Page<RoomDTO> getAllRooms(
+            String search,
+            String filterCriteria,
+            Pageable pageable
+    );
 
     RoomDTO getRoomById(Long id);
 

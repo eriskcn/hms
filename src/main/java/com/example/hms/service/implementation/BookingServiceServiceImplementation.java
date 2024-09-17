@@ -28,7 +28,11 @@ public class BookingServiceServiceImplementation implements BookingServiceServic
     private final ServiceRepository serviceRepository;
 
     @Autowired
-    public BookingServiceServiceImplementation(BookingServiceRepository bookingServiceRepository, BookingRepository bookingRepository, ServiceRepository serviceRepository) {
+    public BookingServiceServiceImplementation(
+            BookingServiceRepository bookingServiceRepository,
+            BookingRepository bookingRepository,
+            ServiceRepository serviceRepository
+    ) {
         this.bookingServiceRepository = bookingServiceRepository;
         this.bookingRepository = bookingRepository;
         this.serviceRepository = serviceRepository;

@@ -108,7 +108,13 @@ public class ServiceServiceImplementation implements ServiceService {
     }
 
     private ServiceDTO mapToDTO(Service service) {
-        return new ServiceDTO(service.getId(), service.getName(), service.getCategory(), service.getPrice(), service.getStatus());
+        return new ServiceDTO(
+                service.getId(),
+                service.getName(),
+                service.getCategory(),
+                service.getPrice(),
+                service.getStatus()
+        );
     }
 
     private Service mapToEntity(ServiceCreateDTO serviceCreateDTO) {

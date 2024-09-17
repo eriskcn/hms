@@ -6,7 +6,11 @@ import org.springframework.data.domain.Pageable;
 
 
 public interface BookingService {
-    Page<BookingPresentationDTO> getAllBookings(String search, String filterCriteria, Pageable pageable);
+    Page<BookingPresentationDTO> getAllBookings(
+            String search,
+            String filterCriteria,
+            Pageable pageable
+    );
 
     BookingDetailsDTO getBookingById(Long id);
 

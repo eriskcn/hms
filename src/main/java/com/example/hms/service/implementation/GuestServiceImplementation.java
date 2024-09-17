@@ -38,7 +38,11 @@ public class GuestServiceImplementation implements GuestService {
     }
 
     @Override
-    public Page<GuestDTO> getAllGuests(String search, String filterCriteria, Pageable pageable) {
+    public Page<GuestDTO> getAllGuests(
+            String search,
+            String filterCriteria,
+            Pageable pageable
+    ) {
         Specification<Guest> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -122,7 +126,14 @@ public class GuestServiceImplementation implements GuestService {
     }
 
     private GuestDTO mapToDTO(Guest guest) {
-        return new GuestDTO(guest.getId(), guest.getName(), guest.getIdCard(), guest.getGender(), guest.getPhone(), guest.getTotalAmount());
+        return new GuestDTO(
+                guest.getId(),
+                guest.getName(),
+                guest.getIdCard(),
+                guest.getGender(),
+                guest.getPhone(),
+                guest.getTotalAmount()
+        );
     }
 
     private Guest mapToEntity(GuestCreateDTO guestCreateDTO) {
@@ -144,7 +155,8 @@ public class GuestServiceImplementation implements GuestService {
         guestDetailsDTO.setTotalAmount(guest.getTotalAmount());
 
         List<Booking> bookings = bookingRepository.findByGuestIdAndIsDeletedFalse(guest.getId());
-        List<BookingInnerDTO> bookingInnerDTOS = bookings.stream().map(this::mapToInnerDTO).collect(Collectors.toList());
+        List<BookingInnerDTO> bookingInnerDTOS = bookings.stream()
+                .map(this::mapToInnerDTO).collect(Collectors.toList());
         guestDetailsDTO.setBookings(bookingInnerDTOS);
         return guestDetailsDTO;
     }
