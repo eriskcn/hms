@@ -98,6 +98,7 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
         return mapToDetailsDTO(booking);
     }
 
+    // for add pre-booking
     @Override
     public BookingCreateDTO createBooking(BookingCreateDTO bookingCreateDTO) {
         Booking booking = mapToEntity(bookingCreateDTO);
