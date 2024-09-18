@@ -16,31 +16,34 @@ public class RoomPricing {
      * @param checkOut The end time.
      * @return The total amount to be charged.
      */
-    public static BigDecimal calc(double price, double rate, LocalDateTime checkIn, LocalDateTime checkOut) {
+    public static BigDecimal calc(BigDecimal price, BigDecimal rate, LocalDateTime checkIn, LocalDateTime checkOut) {
         if (checkIn == null || checkOut == null) {
             throw new IllegalArgumentException("checkIn and checkOut cannot be null");
         }
-        if (price <= 0) {
+        if (price.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("price must be greater than zero");
         }
-        if (rate < 0) {
+        if (rate.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("rate must be non-negative");
         }
 
-        double hours = calculateHoursBetween(checkIn, checkOut);
-        double additionalHourPrice = (rate / 100) * price; // rate percentage of the price for additional hours
-        double amount;
+        BigDecimal hours = BigDecimal.valueOf(calculateHoursBetween(checkIn, checkOut));
 
-        if (hours <= 1) {
-            amount = price;
-        } else {
-            amount = price + (Math.ceil(hours - 1) * additionalHourPrice);
+        // If hours is less than or equal to 1, charge the base price.
+        if (hours.compareTo(BigDecimal.ONE) <= 0) {
+            return price.setScale(2, RoundingMode.HALF_UP);
         }
 
-        // Create a BigDecimal for precise rounding
-        BigDecimal amountBD = new BigDecimal(amount);
-        // Round to 2 decimal places
-        return amountBD.setScale(2, RoundingMode.HALF_UP);
+        // Calculate additional hour cost based on the rate.
+        BigDecimal additionalHourPrice = price.multiply(rate).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        BigDecimal additionalHours = hours.subtract(BigDecimal.ONE).setScale(0, RoundingMode.UP); // Round up additional hours
+        BigDecimal additionalCost = additionalHourPrice.multiply(additionalHours);
+
+        // Total amount = price for the first hour + additional costs for extra hours
+        BigDecimal totalAmount = price.add(additionalCost);
+
+        // Return rounded result
+        return totalAmount.setScale(2, RoundingMode.HALF_UP);
     }
 
     /**
@@ -55,10 +58,10 @@ public class RoomPricing {
         double hours = duration.toHours();
         double minutes = duration.toMinutesPart();
         double seconds = duration.toSecondsPart();
+
         double minutesInHours = minutes / 60.0;
         double secondsInHours = seconds / 3600.0;
 
         return hours + minutesInHours + secondsInHours;
     }
 }
-

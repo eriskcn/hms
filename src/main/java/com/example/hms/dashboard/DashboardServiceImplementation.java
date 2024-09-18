@@ -9,6 +9,7 @@ import com.example.hms.dto.service.ServiceInnerDTO;
 import com.example.hms.entity.*;
 import com.example.hms.repository.*;
 import com.example.hms.exception.ResourceNotFoundException;
+import com.example.hms.util.RoomPricing;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,7 @@ public class DashboardServiceImplementation implements DashboardService {
     private final GuestRepository guestRepository;
     private final RoomRepository roomRepository;
     private final ServiceRepository serviceRepository;
+    private final static double PRICE_RATING = 10.0;
 
     @Autowired
     public DashboardServiceImplementation(
@@ -161,8 +163,11 @@ public class DashboardServiceImplementation implements DashboardService {
         // Set check-out time
         booking.setCheckOut(LocalDateTime.now());
 
+        BigDecimal amount = booking.getAmount();
+        BigDecimal roomPricing = RoomPricing.calc(booking.getRoom().getPrice(), BigDecimal.valueOf(PRICE_RATING), booking.getCheckIn(), booking.getCheckOut());
         // Calculate final amount (you might want to add any additional charges here)
-        BigDecimal finalAmount = booking.getAmount();
+        BigDecimal finalAmount =  amount.add(roomPricing);
+        booking.setAmount(finalAmount);
 
         // Update guest's total amount
         Guest guest = booking.getGuest();
