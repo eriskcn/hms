@@ -40,17 +40,17 @@ public class ServiceServiceImplementation implements ServiceService {
             // Filter functionality
             if (filterCriteria != null && !filterCriteria.isEmpty()) {
                 switch (filterCriteria.toLowerCase()) {
-                    case "food_and_beverage":
-                        predicates.add(criteriaBuilder.equal(root.get("food_and_beverage"), filterCriteria));
+                    case "fnb":
+                        predicates.add(criteriaBuilder.equal(root.get("category"), "FOOD_AND_BEVERAGE"));
                         break;
-                    case "spa_and_wellness":
-                        predicates.add(criteriaBuilder.equal(root.get("spa_and_wellness"), filterCriteria));
+                    case "spa":
+                        predicates.add(criteriaBuilder.equal(root.get("category"), "SPA_AND_WELLNESS"));
                         break;
                     case "housekeeping":
-                        predicates.add(criteriaBuilder.equal(root.get("housekeeping"), filterCriteria));
+                        predicates.add(criteriaBuilder.equal(root.get("category"), "HOUSEKEEPING"));
                         break;
                     case "other":
-                        predicates.add(criteriaBuilder.equal(root.get("other"), filterCriteria));
+                        predicates.add(criteriaBuilder.equal(root.get("category"), "OTHER"));
                         break;
                     default:
                         break;

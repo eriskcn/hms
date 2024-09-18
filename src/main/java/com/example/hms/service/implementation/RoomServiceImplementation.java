@@ -49,13 +49,13 @@ public class RoomServiceImplementation implements RoomService {
             if (filterCriteria != null && !filterCriteria.isEmpty()) {
                 switch (filterCriteria.toLowerCase()) {
                     case "standard":
-                        predicates.add(criteriaBuilder.equal(root.get("standard"), filterCriteria));
+                        predicates.add(criteriaBuilder.equal(root.get("type"), "standard"));
                         break;
                     case "suite":
-                        predicates.add(criteriaBuilder.equal(root.get("suite"), filterCriteria));
+                        predicates.add(criteriaBuilder.equal(root.get("type"), "suite"));
                         break;
                     case "vip":
-                        predicates.add(criteriaBuilder.equal(root.get("vip"), filterCriteria));
+                        predicates.add(criteriaBuilder.equal(root.get("type"), "vip"));
                         break;
                     default:
                         break;
