@@ -70,12 +70,11 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
             // Filter functionality
             if (filterCriteria != null && !filterCriteria.isEmpty()) {
                 switch (filterCriteria.toLowerCase()) {
-                    case "is_pre_booking":
+                    case "prebooking":
                         predicates.add(criteriaBuilder.equal(root.get("isPreBooking"), true));
                         break;
                     case "checked-out":
-                        predicates.add(criteriaBuilder.notEqual(root.get("checkOut"), null));
-                        break;
+                        predicates.add(criteriaBuilder.isNotNull(root.get("checkOut")));                       break;
                     case "active":
                         Predicate checkOutNull = criteriaBuilder.isNull(root.get("checkOut"));
                         Predicate checkOutFuture = criteriaBuilder.greaterThan(root.get("checkOut"), criteriaBuilder.currentTimestamp());
