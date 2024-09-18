@@ -67,7 +67,7 @@ public class ServiceServiceImplementation implements ServiceService {
 
     @Override
     public ServiceDTO getServiceById(Long id) {
-        Service service = serviceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Service not found on::" + id));
+        Service service = serviceRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new ResourceNotFoundException("Service not found on::" + id));
         return mapToDTO(service);
     }
 
@@ -81,7 +81,7 @@ public class ServiceServiceImplementation implements ServiceService {
     @Override
     @Transactional
     public ServiceDTO updateService(Long id, ServiceUpdateDTO serviceUpdateDTO) {
-        Service service = serviceRepository.findById(id).orElseThrow(
+        Service service = serviceRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
                 () -> new ResourceNotFoundException("Service not found on::" + id)
         );
         if (serviceUpdateDTO.getName() != null) {
@@ -102,7 +102,7 @@ public class ServiceServiceImplementation implements ServiceService {
     @Override
     @Transactional
     public void deleteService(Long id) {
-        Service service = serviceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Service not found on::" + id));
+        Service service = serviceRepository.findByIdAndIsDeletedFalse(id).orElseThrow(() -> new ResourceNotFoundException("Service not found on::" + id));
         service.setIsDeleted(true);
         serviceRepository.delete(service);
     }

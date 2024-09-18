@@ -1,5 +1,6 @@
 package com.example.hms.dashboard;
 
+import com.example.hms.dto.booking.BookingDetailsDTO;
 import com.example.hms.dto.booking.BookingPresentationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,7 @@ public class DashboardController {
         return ResponseEntity.ok(dashboardService.getOccupiedRooms(search, pageable));
     }
 
-    @PutMapping("/check-in")
+    @PostMapping("/check-in")
     public ResponseEntity<BookingPresentationDTO> checkInGuest(@RequestBody CheckInDTO checkInDTO) {
         return ResponseEntity.ok(dashboardService.checkInGuest(checkInDTO));
     }
@@ -34,5 +35,21 @@ public class DashboardController {
     public ResponseEntity<Void> addRoomService(@RequestBody RoomServiceDTO roomServiceDTO) {
         dashboardService.addRoomService(roomServiceDTO);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/room-service/{id}")
+    public ResponseEntity<Void> updateRoomService(@PathVariable Long id, @RequestBody int quantity) {
+        dashboardService.updateRoomService(id, quantity);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<DashboardStatsDTO> getDashboardStats() {
+        return ResponseEntity.ok(dashboardService.getDashboardStats());
+    }
+
+    @PutMapping("/check-out/{id}")
+    public ResponseEntity<BookingDetailsDTO> checkOut(@PathVariable Long id) {
+        return ResponseEntity.ok(dashboardService.checkOutGuest(id));
     }
 }

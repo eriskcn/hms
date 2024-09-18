@@ -24,6 +24,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -95,7 +96,7 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
 
     @Override
     public BookingDetailsDTO getBookingById(Long id) {
-        Booking booking = bookingRepository.findById(id).orElseThrow(
+        Booking booking = bookingRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
                 () -> new ResourceNotFoundException("Booking not found on::" + id)
         );
         return mapToDetailsDTO(booking);
@@ -112,17 +113,30 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
     @Override
     @Transactional
     public BookingDTO updateBooking(Long id, BookingUpdateDTO bookingUpdateDTO) {
-        Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + id));
+        Booking booking = bookingRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
+                () -> new ResourceNotFoundException("Booking not found with id: " + id)
+        );
 
+        BigDecimal oldBookingAmount = booking.getAmount();
+
+        updateBookingFields(booking, bookingUpdateDTO);
+
+        BigDecimal newBookingAmount = booking.getAmount();
+        updateGuestTotalAmount(booking.getGuest(), oldBookingAmount, newBookingAmount);
+
+        Booking updatedBooking = bookingRepository.save(booking);
+        return mapToDTO(updatedBooking);
+    }
+
+    private void updateBookingFields(Booking booking, BookingUpdateDTO bookingUpdateDTO) {
         if (bookingUpdateDTO.getGuestId() != null) {
-            Guest guest = guestRepository.findById(bookingUpdateDTO.getGuestId())
+            Guest guest = guestRepository.findByIdAndIsDeletedFalse(bookingUpdateDTO.getGuestId())
                     .orElseThrow(() -> new ResourceNotFoundException("Guest not found with id: " + bookingUpdateDTO.getGuestId()));
             booking.setGuest(guest);
         }
 
         if (bookingUpdateDTO.getRoomId() != null) {
-            Room room = roomRepository.findById(bookingUpdateDTO.getRoomId())
+            Room room = roomRepository.findByIdAndIsDeletedFalse(bookingUpdateDTO.getRoomId())
                     .orElseThrow(() -> new ResourceNotFoundException("Room not found with id: " + bookingUpdateDTO.getRoomId()));
             booking.setRoom(room);
         }
@@ -138,13 +152,18 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
         if (bookingUpdateDTO.getAmount() != null) {
             booking.setAmount(bookingUpdateDTO.getAmount());
         }
-        Booking updatedBooking = bookingRepository.save(booking);
-        return mapToDTO(updatedBooking);
     }
+
+    private void updateGuestTotalAmount(Guest guest, BigDecimal oldAmount, BigDecimal newAmount) {
+        BigDecimal difference = newAmount.subtract(oldAmount);
+        guest.setTotalAmount(guest.getTotalAmount().add(difference));
+        guestRepository.save(guest);
+    }
+
     @Override
     @Transactional
     public void deleteBooking(Long id) {
-        Booking booking = bookingRepository.findById(id).orElseThrow(
+        Booking booking = bookingRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
                 () -> new ResourceNotFoundException("Booking not found on::" + id)
         );
         booking.setIsDeleted(true);
@@ -229,10 +248,10 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
 
     private Booking mapToEntity(BookingCreateDTO bookingCreateDTO) {
         Booking booking = new Booking();
-        Guest guest = guestRepository.findById(bookingCreateDTO.getGuestId()).orElseThrow(
+        Guest guest = guestRepository.findByIdAndIsDeletedFalse(bookingCreateDTO.getGuestId()).orElseThrow(
                 () -> new ResourceNotFoundException("Guest not found on::" + bookingCreateDTO.getGuestId())
         );
-        Room room = roomRepository.findById(bookingCreateDTO.getRoomId()).orElseThrow(
+        Room room = roomRepository.findByIdAndIsDeletedFalse(bookingCreateDTO.getRoomId()).orElseThrow(
                 () -> new ResourceNotFoundException("Room not found on::" + bookingCreateDTO.getRoomId())
         );
         booking.setGuest(guest);

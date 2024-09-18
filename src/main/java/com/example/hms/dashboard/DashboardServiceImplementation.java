@@ -1,5 +1,6 @@
 package com.example.hms.dashboard;
 
+import com.example.hms.dto.booking.BookingDetailsDTO;
 import com.example.hms.dto.booking.BookingPresentationDTO;
 import com.example.hms.dto.bookingservice.BookingServiceInnerDTO;
 import com.example.hms.dto.guest.GuestInnerDTO;
@@ -58,9 +59,9 @@ public class DashboardServiceImplementation implements DashboardService {
     @Override
     @Transactional
     public BookingPresentationDTO checkInGuest(CheckInDTO checkInDTO) {
-        Guest guest = guestRepository.findById(checkInDTO.getGuestId())
+        Guest guest = guestRepository.findByIdAndIsDeletedFalse(checkInDTO.getGuestId())
                 .orElseThrow(() -> new ResourceNotFoundException("Guest not found with id: " + checkInDTO.getGuestId()));
-        Room room = roomRepository.findById(checkInDTO.getRoomId())
+        Room room = roomRepository.findByIdAndIsDeletedFalse(checkInDTO.getRoomId())
                 .orElseThrow(() -> new ResourceNotFoundException("Room not found with id: " + checkInDTO.getRoomId()));
 
         Booking booking = new Booking();
@@ -76,9 +77,9 @@ public class DashboardServiceImplementation implements DashboardService {
     @Override
     @Transactional
     public void addRoomService(RoomServiceDTO roomServiceDTO) {
-        Booking booking = bookingRepository.findById(roomServiceDTO.getBookingId())
+        Booking booking = bookingRepository.findByIdAndIsDeletedFalse(roomServiceDTO.getBookingId())
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + roomServiceDTO.getBookingId()));
-        Service service = serviceRepository.findById(roomServiceDTO.getServiceId())
+        Service service = serviceRepository.findByIdAndIsDeletedFalse(roomServiceDTO.getServiceId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service not found with id: " + roomServiceDTO.getServiceId()));
 
         BookingService bookingService = new BookingService();
@@ -90,6 +91,110 @@ public class DashboardServiceImplementation implements DashboardService {
         BigDecimal additionalAmount = service.getPrice().multiply(BigDecimal.valueOf(roomServiceDTO.getQuantity()));
         booking.setAmount(booking.getAmount().add(additionalAmount));
         bookingRepository.save(booking);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public DashboardStatsDTO getDashboardStats() {
+        int totalRooms = roomRepository.getTotalRooms();
+        int availableRooms = roomRepository.getAvailableRooms();
+        BigDecimal monthRevenue = bookingRepository.getCurrentMonthRevenue();
+
+        return new DashboardStatsDTO(
+                totalRooms,
+                availableRooms,
+                monthRevenue.doubleValue()
+        );
+    }
+
+    @Override
+    @Transactional
+    public void updateRoomService(Long id, int quantity) {
+        if (quantity < 0) {
+            throw new IllegalArgumentException("Quantity cannot be negative");
+        }
+
+        BookingService bookingService = bookingServiceRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
+                () -> new ResourceNotFoundException("Booking Service not found on::" + id)
+        );
+
+        int oldQuantity = bookingService.getQuantity();
+        int differenceQuantity = quantity - oldQuantity;
+
+        BigDecimal servicePrice = bookingService.getService().getPrice();
+        BigDecimal differenceAmount = servicePrice.multiply(BigDecimal.valueOf(differenceQuantity));
+
+        Booking booking = bookingService.getBooking();
+        BigDecimal oldBookingAmount = booking.getAmount();
+        BigDecimal newBookingAmount = oldBookingAmount.add(differenceAmount);
+
+        // Update booking service quantity
+        bookingService.setQuantity(quantity);
+        bookingServiceRepository.save(bookingService);
+
+        // Update booking amount
+        booking.setAmount(newBookingAmount);
+        bookingRepository.save(booking);
+
+        // Update guest total amount
+        Guest guest = booking.getGuest();
+        guest.setTotalAmount(guest.getTotalAmount().add(differenceAmount));
+        guestRepository.save(guest);
+
+        // If quantity is 0, consider removing the service from the booking
+        if (quantity == 0) {
+            bookingService.setIsDeleted(true);
+            bookingServiceRepository.save(bookingService);
+        }
+    }
+
+    @Override
+    @Transactional
+    public BookingDetailsDTO checkOutGuest(Long id) {
+        Booking booking = bookingRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found on::" + id));
+
+        if (booking.getCheckOut() != null) {
+            throw new IllegalStateException("Guest has already checked out.");
+        }
+
+        // Set check-out time
+        booking.setCheckOut(LocalDateTime.now());
+
+        // Calculate final amount (you might want to add any additional charges here)
+        BigDecimal finalAmount = booking.getAmount();
+
+        // Update guest's total amount
+        Guest guest = booking.getGuest();
+        guest.setTotalAmount(guest.getTotalAmount().add(finalAmount));
+        guestRepository.save(guest);
+
+        // Save updated booking
+        booking = bookingRepository.save(booking);
+
+        // Map to DTO and return
+        return mapToDetailsDTO(booking);
+    }
+
+    private BookingDetailsDTO mapToDetailsDTO(Booking booking) {
+        GuestInnerDTO guestDTO = mapToInnerDTO(booking.getGuest());
+        RoomInnerDTO roomDTO = mapToInnerDTO(booking.getRoom());
+
+        List<BookingService> bookingServices = bookingServiceRepository.findByBookingIdAndIsDeletedFalse(booking.getId());
+        List<BookingServiceInnerDTO> services = bookingServices.stream()
+                .map(this::mapToInnerDTO)
+                .collect(Collectors.toList());
+
+        return new BookingDetailsDTO(
+                booking.getId(),
+                guestDTO,
+                roomDTO,
+                booking.getCheckIn(),
+                booking.getCheckOut(),
+                booking.getIsPreBooking(),
+                services,
+                booking.getAmount()
+        );
     }
 
     private Specification<Booking> createOccupiedRoomsSpecification(String search) {

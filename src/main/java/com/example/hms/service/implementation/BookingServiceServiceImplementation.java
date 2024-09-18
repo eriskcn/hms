@@ -46,7 +46,7 @@ public class BookingServiceServiceImplementation implements BookingServiceServic
 
     @Override
     public BookingServicePresentationDTO getBookingServiceById(Long id) {
-        BookingService bookingService = bookingServiceRepository.findById(id).orElseThrow(
+        BookingService bookingService = bookingServiceRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
                 () -> new ResourceNotFoundException("BookingService not found on::" + id)
         );
         return mapToPresentationDTO(bookingService);
@@ -62,7 +62,7 @@ public class BookingServiceServiceImplementation implements BookingServiceServic
     @Override
     @Transactional
     public BookingServiceDTO updateBookingService(Long id, BookingServiceDTO bookingServiceDTO) {
-        BookingService bookingService = bookingServiceRepository.findById(id).orElseThrow(
+        BookingService bookingService = bookingServiceRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
                 () -> new ResourceNotFoundException("BookingService not found on::" + id)
         );
         Booking booking = bookingRepository.findById(bookingServiceDTO.getBookingId()).orElseThrow(
@@ -79,7 +79,7 @@ public class BookingServiceServiceImplementation implements BookingServiceServic
     @Override
     @Transactional
     public void deleteBookingService(Long id) {
-        BookingService bookingService = bookingServiceRepository.findById(id).orElseThrow(
+        BookingService bookingService = bookingServiceRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
                 () -> new ResourceNotFoundException("BookingService not found on::" + id)
         );
         bookingService.setIsDeleted(true);
@@ -92,10 +92,10 @@ public class BookingServiceServiceImplementation implements BookingServiceServic
 
     private BookingService mapToEntity(BookingServiceCreateDTO bookingServiceCreateDTO) {
         BookingService bookingService = new BookingService();
-        Booking booking = bookingRepository.findById(bookingServiceCreateDTO.getBookingId()).orElseThrow(
+        Booking booking = bookingRepository.findByIdAndIsDeletedFalse(bookingServiceCreateDTO.getBookingId()).orElseThrow(
                 () -> new ResourceNotFoundException("Booking not found on::" + bookingServiceCreateDTO.getBookingId())
         );
-        Service service = serviceRepository.findById(bookingServiceCreateDTO.getServiceId()).orElseThrow(
+        Service service = serviceRepository.findByIdAndIsDeletedFalse(bookingServiceCreateDTO.getServiceId()).orElseThrow(
                 () -> new ResourceNotFoundException("Service not found on::" + bookingServiceCreateDTO.getServiceId())
         );
         bookingService.setBooking(booking);

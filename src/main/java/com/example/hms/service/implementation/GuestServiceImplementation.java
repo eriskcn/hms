@@ -82,7 +82,7 @@ public class GuestServiceImplementation implements GuestService {
 
     @Override
     public GuestDetailsDTO getGuestById(Long id) {
-        Guest guest = guestRepository.findById(id).orElseThrow(
+        Guest guest = guestRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
                 () -> new ResourceNotFoundException("Guest not found on::" + id)
         );
         return mapToDetailsDTO(guest);
@@ -98,7 +98,7 @@ public class GuestServiceImplementation implements GuestService {
 
     @Override
     public GuestDTO updateGuest(Long id, GuestUpdateDTO guestUpdateDTO) {
-        Guest guest = guestRepository.findById(id).orElseThrow(
+        Guest guest = guestRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
                 () -> new ResourceNotFoundException("Guest not found on::" + id)
         );
         if (guestUpdateDTO.getName() != null) {
@@ -118,7 +118,7 @@ public class GuestServiceImplementation implements GuestService {
 
     @Override
     public void deleteGuest(Long id) {
-        Guest guest = guestRepository.findById(id).orElseThrow(
+        Guest guest = guestRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
                 () -> new ResourceNotFoundException("Guest not found on::" + id)
         );
         guest.setIsDeleted(true);

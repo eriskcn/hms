@@ -72,7 +72,7 @@ public class RoomServiceImplementation implements RoomService {
 
     @Override
     public RoomDTO getRoomById(Long id) {
-        Room room = roomRepository.findById(id).orElseThrow(
+        Room room = roomRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
                 () -> new ResourceNotFoundException("Room not found on::" + id)
         );
         return mapToDTO(room);
@@ -89,7 +89,7 @@ public class RoomServiceImplementation implements RoomService {
     @Override
     @Transactional
     public RoomDTO updateRoom(Long id, RoomUpdateDTO roomUpdateDTO) {
-        Room room = roomRepository.findById(id).orElseThrow(
+        Room room = roomRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
                 () -> new ResourceNotFoundException("Room not found on::" + id)
         );
         if (roomUpdateDTO.getNumber() != null) {
@@ -110,7 +110,7 @@ public class RoomServiceImplementation implements RoomService {
     @Override
     @Transactional
     public void deleteRoom(Long id) {
-        Room room = roomRepository.findById(id).orElseThrow(
+        Room room = roomRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
                 () -> new ResourceNotFoundException("Room not found on::" + id)
         );
         room.setIsDeleted(true);
