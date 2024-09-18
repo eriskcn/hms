@@ -25,7 +25,7 @@ Once the build is complete, you can run the application using:
 mvn spring-boot:run
 ```
 
-#### Step 4: Setup the MySQL Database
+#### Step 4: Set up the MySQL Database
 
 Make sure you have [MySQL](https://www.mysql.com/downloads/) installed on your system.
 
@@ -90,3 +90,46 @@ http://localhost:8080
   - filterCriteria: standard, suite, vip
 
 > Note: Maybe you never use BookingServiceController
+
+### Dependencies
+1. **Spring Boot Data JPA**
+  - `groupId`: org.springframework.boot
+  - `artifactId`: spring-boot-starter-data-jpa
+
+2. **Spring Boot Data REST**
+  - `groupId`: org.springframework.boot
+  - `artifactId`: spring-boot-starter-data-rest
+
+3. **Spring Boot Validation**
+  - `groupId`: org.springframework.boot
+  - `artifactId`: spring-boot-starter-validation
+
+4. **Spring Boot Web**
+  - `groupId`: org.springframework.boot
+  - `artifactId`: spring-boot-starter-web
+
+5. **Spring Boot DevTools** (runtime and optional)
+  - `groupId`: org.springframework.boot
+  - `artifactId`: spring-boot-devtools
+  - `scope`: runtime
+  - `optional`: true
+
+6. **MySQL Connector**
+  - `groupId`: com.mysql
+  - `artifactId`: mysql-connector-j
+  - `scope`: runtime
+
+7. **Lombok** (optional)
+  - `groupId`: org.projectlombok
+  - `artifactId`: lombok
+  - `optional`: true
+
+8. **Spring Boot Tomcat** (provided scope)
+  - `groupId`: org.springframework.boot
+  - `artifactId`: spring-boot-starter-tomcat
+  - `scope`: provided
+
+9. **Spring Boot Test** (test scope)
+  - `groupId`: org.springframework.boot
+  - `artifactId`: spring-boot-starter-test
+  - `scope`: test
