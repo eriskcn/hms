@@ -7,6 +7,7 @@ import com.example.hms.dto.guest.GuestInnerDTO;
 import com.example.hms.dto.room.RoomInnerDTO;
 import com.example.hms.dto.service.ServiceInnerDTO;
 import com.example.hms.entity.*;
+import com.example.hms.entity.enumdef.Status;
 import com.example.hms.repository.*;
 import com.example.hms.exception.ResourceNotFoundException;
 import com.example.hms.util.RoomPricing;
@@ -66,13 +67,13 @@ public class DashboardServiceImplementation implements DashboardService {
         Room room = roomRepository.findByIdAndIsDeletedFalse(checkInDTO.getRoomId())
                 .orElseThrow(() -> new ResourceNotFoundException("Room not found with id: " + checkInDTO.getRoomId()));
 
+        room.setStatus(Status.UNAVAILABLE);
         Booking booking = new Booking();
         booking.setGuest(guest);
         booking.setRoom(room);
         booking.setIsPreBooking(false);
         booking.setCheckIn(LocalDateTime.now());
         booking = bookingRepository.save(booking);
-
         return mapToPresentationDTO(booking);
     }
 
@@ -159,6 +160,9 @@ public class DashboardServiceImplementation implements DashboardService {
         if (booking.getCheckOut() != null) {
             throw new IllegalStateException("Guest has already checked out.");
         }
+
+        Room room = booking.getRoom();
+        room.setStatus(Status.AVAILABLE);
 
         // Set check-out time
         booking.setCheckOut(LocalDateTime.now());

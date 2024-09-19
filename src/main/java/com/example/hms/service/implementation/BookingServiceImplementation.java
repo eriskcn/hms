@@ -8,6 +8,7 @@ import com.example.hms.dto.service.ServiceInnerDTO;
 import com.example.hms.entity.Booking;
 import com.example.hms.entity.Guest;
 import com.example.hms.entity.Room;
+import com.example.hms.entity.enumdef.Status;
 import com.example.hms.repository.BookingRepository;
 import com.example.hms.repository.BookingServiceRepository;
 import com.example.hms.repository.GuestRepository;
@@ -106,6 +107,9 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
     @Transactional
     public BookingDTO createBooking(BookingCreateDTO bookingCreateDTO) {
         Booking booking = mapToEntity(bookingCreateDTO);
+        Room room = booking.getRoom();
+        room.setStatus(Status.UNAVAILABLE);
+        roomRepository.save(room);
         return mapToDTO(bookingRepository.save(booking));
     }
 
@@ -117,12 +121,9 @@ public class BookingServiceImplementation implements com.example.hms.service.Boo
         );
 
         BigDecimal oldBookingAmount = booking.getAmount();
-
         updateBookingFields(booking, bookingUpdateDTO);
-
         BigDecimal newBookingAmount = booking.getAmount();
         updateGuestTotalAmount(booking.getGuest(), oldBookingAmount, newBookingAmount);
-
         Booking updatedBooking = bookingRepository.save(booking);
         return mapToDTO(updatedBooking);
     }
