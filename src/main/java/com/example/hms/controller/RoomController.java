@@ -1,5 +1,6 @@
 package com.example.hms.controller;
 
+import com.example.hms.dto.room.RoomAvailableDTO;
 import com.example.hms.dto.room.RoomCreateDTO;
 import com.example.hms.dto.room.RoomDTO;
 import com.example.hms.dto.room.RoomUpdateDTO;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/hms/rooms")
@@ -35,6 +38,13 @@ public class RoomController {
     public ResponseEntity<RoomDTO> getRoomById(@PathVariable("id") Long id) {
         RoomDTO roomDTO = roomService.getRoomById(id);
         return ResponseEntity.ok(roomDTO);
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<RoomAvailableDTO>> getAvailableRooms(
+            @RequestParam(required = false) String type
+    ) {
+        return ResponseEntity.ok(roomService.getAvailableRoomsByType(type))   ;
     }
 
     @PostMapping

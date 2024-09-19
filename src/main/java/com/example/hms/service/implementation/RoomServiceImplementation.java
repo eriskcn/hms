@@ -1,9 +1,11 @@
 package com.example.hms.service.implementation;
 
+import com.example.hms.dto.room.RoomAvailableDTO;
 import com.example.hms.dto.room.RoomCreateDTO;
 import com.example.hms.dto.room.RoomDTO;
 import com.example.hms.dto.room.RoomUpdateDTO;
 import com.example.hms.entity.Room;
+import com.example.hms.entity.enumdef.Status;
 import com.example.hms.repository.RoomRepository;
 import com.example.hms.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,12 +60,6 @@ public class RoomServiceImplementation implements RoomService {
                     case "vip":
                         predicates.add(criteriaBuilder.equal(root.get("type"), "vip"));
                         break;
-                    case "available":
-                        predicates.add(criteriaBuilder.equal(root.get("status"), "available"));
-                        break;
-                    case "unavailable":
-                        predicates.add(criteriaBuilder.equal(root.get("status"), "unavailable"));
-                        break;
                     default:
                         break;
                 }
@@ -82,6 +79,28 @@ public class RoomServiceImplementation implements RoomService {
                 () -> new ResourceNotFoundException("Room not found on::" + id)
         );
         return mapToDTO(room);
+    }
+
+    @Override
+    public List<RoomAvailableDTO> getAvailableRoomsByType(String type) {
+        Specification<Room> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            predicates.add(criteriaBuilder.equal(root.get("status"), Status.AVAILABLE));
+            if (type != null && !type.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("type"), type.toLowerCase()));
+            }
+
+            predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+        List<Room> rooms = roomRepository.findAll(spec);
+        return rooms.stream().map(this::mapToAvailableDTO).collect(Collectors.toList());
+    }
+
+    private RoomAvailableDTO mapToAvailableDTO(Room room) {
+        return new RoomAvailableDTO(room.getId(), room.getNumber());
     }
 
     @Override
