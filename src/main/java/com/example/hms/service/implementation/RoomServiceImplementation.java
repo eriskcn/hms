@@ -57,6 +57,12 @@ public class RoomServiceImplementation implements RoomService {
                     case "vip":
                         predicates.add(criteriaBuilder.equal(root.get("type"), "vip"));
                         break;
+                    case "available":
+                        predicates.add(criteriaBuilder.equal(root.get("status"), "AVAILABLE"));
+                        break;
+                    case "unavailable":
+                        predicates.add(criteriaBuilder.equal(root.get("status"), "UNAVAILABLE"));
+                        break;
                     default:
                         break;
                 }
