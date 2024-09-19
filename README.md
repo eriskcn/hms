@@ -136,7 +136,8 @@ http://localhost:8080
 
 ### API URL Dashboard
 
-GET /hms/dashboard/occupied-rooms
+GET /hms/dashboard/occupied-rooms?search=&page=&size= 
+> Search: room number and guest name, page default 0, size default 20
 
 POST /hms/dashboard/check-in (body: Long guestId, Long roomId)
 
