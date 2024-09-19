@@ -132,3 +132,13 @@ http://localhost:8080
   - `groupId`: org.springframework.boot
   - `artifactId`: spring-boot-starter-test
   - `scope`: test
+
+
+### API URL Dashboard
+
+GET /hms/dashboard/occupied-rooms
+POST /hms/dashboard/check-in (body: Long guestId, Long roomId)
+GET /hms/dashboard/stats 
+POST /hms/dashboard/room-service (body: Long bookingId, Long serviceId, int quantity)
+PUT /hms/dashboard/room-service/:id (body: int quantity)
+PUT /check-out/:id
