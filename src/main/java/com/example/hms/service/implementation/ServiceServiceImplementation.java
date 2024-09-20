@@ -2,8 +2,10 @@ package com.example.hms.service.implementation;
 
 import com.example.hms.dto.service.ServiceCreateDTO;
 import com.example.hms.dto.service.ServiceDTO;
+import com.example.hms.dto.service.ServiceInnerDTO;
 import com.example.hms.dto.service.ServiceUpdateDTO;
 import com.example.hms.entity.Service;
+import com.example.hms.entity.enumdef.Status;
 import com.example.hms.repository.ServiceRepository;
 import com.example.hms.service.ServiceService;
 import jakarta.persistence.criteria.Predicate;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
 public class ServiceServiceImplementation implements ServiceService {
@@ -63,6 +66,30 @@ public class ServiceServiceImplementation implements ServiceService {
         };
         Page<Service> servicePage = serviceRepository.findAll(spec, pageable);
         return servicePage.map(this::mapToDTO);
+    }
+
+    @Override
+    public List<ServiceInnerDTO> getAllAvailableServices(String search) {
+        Specification<Service> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(criteriaBuilder.equal(root.get("status"), Status.AVAILABLE));
+            if (search != null && !search.isEmpty()) {
+                predicates.add(criteriaBuilder.like(root.get("name"), "%" + search.toLowerCase() + "%"));
+            }
+            predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+        List<Service> services = serviceRepository.findAll(spec);
+        return services.stream().map(this::mapToInnerDTO).collect(Collectors.toList());
+    }
+
+    private ServiceInnerDTO mapToInnerDTO(Service service) {
+        return new ServiceInnerDTO(
+                service.getId(),
+                service.getName(),
+                service.getCategory(),
+                service.getPrice()
+        );
     }
 
     @Override

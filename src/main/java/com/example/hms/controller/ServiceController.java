@@ -2,6 +2,7 @@ package com.example.hms.controller;
 
 import com.example.hms.dto.service.ServiceCreateDTO;
 import com.example.hms.dto.service.ServiceDTO;
+import com.example.hms.dto.service.ServiceInnerDTO;
 import com.example.hms.dto.service.ServiceUpdateDTO;
 import com.example.hms.service.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/hms/services")
@@ -53,5 +56,12 @@ public class ServiceController {
     public ResponseEntity<Void> deleteService(@PathVariable("id") Long id) {
         serviceService.deleteService(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<ServiceInnerDTO>> getAllAvailableServices(
+            @RequestParam(required = false) String search
+    ) {
+        return ResponseEntity.ok(serviceService.getAllAvailableServices(search));
     }
 }
