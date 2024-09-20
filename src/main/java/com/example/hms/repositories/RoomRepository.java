@@ -4,9 +4,11 @@ import com.example.hms.entities.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+@Repository
 public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificationExecutor<Room> {
     Optional<Room> findByIdAndIsDeletedFalse(Long id);
     @Query("SELECT COUNT(r) FROM Room r WHERE r.isDeleted = false")
