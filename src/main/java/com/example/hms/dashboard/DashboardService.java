@@ -9,7 +9,7 @@ public interface DashboardService {
     Page<OccupiedRoomDTO> getOccupiedRooms(String search, Pageable pageable);
     BookingPresentationDTO checkInGuest(CheckInDTO checkInDTO);
     void addRoomService(RoomServiceDTO roomServiceDTO);
-    void updateRoomService(Long id, int quantity);
+    void updateRoomService(Long id, RoomServiceUpdateDTO roomServiceUpdateDTO);
     BookingDetailsDTO checkOutGuest(Long bookingId);
     DashboardStatsDTO getDashboardStats();
 }

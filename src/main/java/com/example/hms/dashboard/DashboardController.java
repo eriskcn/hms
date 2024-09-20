@@ -38,8 +38,8 @@ public class DashboardController {
     }
 
     @PutMapping("/room-service/{id}")
-    public ResponseEntity<Void> updateRoomService(@PathVariable Long id, @RequestBody int quantity) {
-        dashboardService.updateRoomService(id, quantity);
+    public ResponseEntity<Void> updateRoomService(@PathVariable Long id, @RequestBody RoomServiceUpdateDTO roomServiceUpdateDTO) {
+        dashboardService.updateRoomService(id, roomServiceUpdateDTO);
         return ResponseEntity.noContent().build();
     }
 

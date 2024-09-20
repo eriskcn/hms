@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomServiceDTO {
-    private Long bookingId;
-    private Long serviceId;
+public class RoomServiceUpdateDTO {
     private Integer quantity;
 }

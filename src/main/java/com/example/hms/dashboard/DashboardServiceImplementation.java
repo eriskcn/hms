@@ -112,7 +112,8 @@ public class DashboardServiceImplementation implements DashboardService {
 
     @Override
     @Transactional
-    public void updateRoomService(Long id, int quantity) {
+    public void updateRoomService(Long id, RoomServiceUpdateDTO roomServiceUpdateDTO) {
+        Integer quantity = roomServiceUpdateDTO.getQuantity();
         if (quantity < 0) {
             throw new IllegalArgumentException("Quantity cannot be negative");
         }
