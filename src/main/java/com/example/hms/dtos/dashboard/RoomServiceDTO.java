@@ -1,4 +1,4 @@
-package com.example.hms.dashboard;
+package com.example.hms.dtos.dashboard;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

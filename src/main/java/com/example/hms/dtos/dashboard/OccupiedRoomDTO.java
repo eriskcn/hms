@@ -1,4 +1,4 @@
-package com.example.hms.dashboard;
+package com.example.hms.dtos.dashboard;
 
 import com.example.hms.dtos.bookingservice.BookingServiceInnerDTO;
 import com.example.hms.dtos.guest.GuestInnerDTO;

@@ -1,15 +1,18 @@
-package com.example.hms.dashboard;
+package com.example.hms.services.implementation;
 
 import com.example.hms.dtos.booking.BookingDetailsDTO;
 import com.example.hms.dtos.booking.BookingPresentationDTO;
 import com.example.hms.dtos.bookingservice.BookingServiceInnerDTO;
+import com.example.hms.dtos.dashboard.*;
 import com.example.hms.dtos.guest.GuestInnerDTO;
 import com.example.hms.dtos.room.RoomInnerDTO;
 import com.example.hms.dtos.service.ServiceInnerDTO;
 import com.example.hms.entities.*;
+import com.example.hms.entities.BookingService;
 import com.example.hms.entities.enumdef.Status;
 import com.example.hms.repositories.*;
 import com.example.hms.exceptions.ResourceNotFoundException;
+import com.example.hms.services.DashboardService;
 import com.example.hms.utils.RoomPricing;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +88,7 @@ public class DashboardServiceImplementation implements DashboardService {
         Service service = serviceRepository.findByIdAndIsDeletedFalse(roomServiceDTO.getServiceId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service not found with id: " + roomServiceDTO.getServiceId()));
 
-        BookingService bookingService = new BookingService();
+        com.example.hms.entities.BookingService bookingService = new com.example.hms.entities.BookingService();
         bookingService.setBooking(booking);
         bookingService.setService(service);
         if (roomServiceDTO.getQuantity() == null || roomServiceDTO.getQuantity() <= 0) {
@@ -121,7 +124,7 @@ public class DashboardServiceImplementation implements DashboardService {
             throw new IllegalArgumentException("Quantity cannot be negative");
         }
 
-        BookingService bookingService = bookingServiceRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
+        com.example.hms.entities.BookingService bookingService = bookingServiceRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
                 () -> new ResourceNotFoundException("Booking Service not found on::" + id)
         );
 
@@ -193,7 +196,7 @@ public class DashboardServiceImplementation implements DashboardService {
         GuestInnerDTO guestDTO = mapToInnerDTO(booking.getGuest());
         RoomInnerDTO roomDTO = mapToInnerDTO(booking.getRoom());
 
-        List<BookingService> bookingServices = bookingServiceRepository.findByBookingIdAndIsDeletedFalse(booking.getId());
+        List<com.example.hms.entities.BookingService> bookingServices = bookingServiceRepository.findByBookingIdAndIsDeletedFalse(booking.getId());
         List<BookingServiceInnerDTO> services = bookingServices.stream()
                 .map(this::mapToInnerDTO)
                 .collect(Collectors.toList());
@@ -238,7 +241,7 @@ public class DashboardServiceImplementation implements DashboardService {
         occupiedRoomDTO.setCheckIn(activeBooking.getCheckIn());
         occupiedRoomDTO.setCheckOut(activeBooking.getCheckOut());
 
-        List<BookingService> bookingServices = bookingServiceRepository.findByBookingIdAndIsDeletedFalse(activeBooking.getId());
+        List<com.example.hms.entities.BookingService> bookingServices = bookingServiceRepository.findByBookingIdAndIsDeletedFalse(activeBooking.getId());
         List<BookingServiceInnerDTO> services = bookingServices.stream()
                 .map(this::mapToInnerDTO)
                 .collect(Collectors.toList());
