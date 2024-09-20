@@ -214,6 +214,7 @@ public class DashboardServiceImplementation implements DashboardService {
                     criteriaBuilder.isNull(root.get("checkOut")),
                     criteriaBuilder.greaterThan(root.get("checkOut"), LocalDateTime.now())
             ));
+            predicates.add(criteriaBuilder.equal(root.get("room").get("status"), Status.UNAVAILABLE));
 
             if (search != null && !search.isEmpty()) {
                 String lowercaseSearch = "%" + search.toLowerCase() + "%";
@@ -221,7 +222,7 @@ public class DashboardServiceImplementation implements DashboardService {
                 Predicate roomNumberPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("room").get("number")), lowercaseSearch);
                 predicates.add(criteriaBuilder.or(guestNamePredicate, roomNumberPredicate));
             }
-
+            predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
