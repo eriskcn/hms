@@ -1,16 +1,16 @@
 package com.example.hms.dashboard;
 
-import com.example.hms.dto.booking.BookingDetailsDTO;
-import com.example.hms.dto.booking.BookingPresentationDTO;
-import com.example.hms.dto.bookingservice.BookingServiceInnerDTO;
-import com.example.hms.dto.guest.GuestInnerDTO;
-import com.example.hms.dto.room.RoomInnerDTO;
-import com.example.hms.dto.service.ServiceInnerDTO;
-import com.example.hms.entity.*;
-import com.example.hms.entity.enumdef.Status;
-import com.example.hms.repository.*;
-import com.example.hms.exception.ResourceNotFoundException;
-import com.example.hms.util.RoomPricing;
+import com.example.hms.dtos.booking.BookingDetailsDTO;
+import com.example.hms.dtos.booking.BookingPresentationDTO;
+import com.example.hms.dtos.bookingservice.BookingServiceInnerDTO;
+import com.example.hms.dtos.guest.GuestInnerDTO;
+import com.example.hms.dtos.room.RoomInnerDTO;
+import com.example.hms.dtos.service.ServiceInnerDTO;
+import com.example.hms.entities.*;
+import com.example.hms.entities.enumdef.Status;
+import com.example.hms.repositories.*;
+import com.example.hms.exceptions.ResourceNotFoundException;
+import com.example.hms.utils.RoomPricing;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -1,7 +1,7 @@
 package com.example.hms.dashboard;
 
-import com.example.hms.dto.booking.BookingDetailsDTO;
-import com.example.hms.dto.booking.BookingPresentationDTO;
+import com.example.hms.dtos.booking.BookingDetailsDTO;
+import com.example.hms.dtos.booking.BookingPresentationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
