@@ -46,7 +46,7 @@ public class ServiceController {
         return new ResponseEntity<>(newService, HttpStatus.CREATED);
     }
 
-    @PutMapping("'/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ServiceDTO> updateService(@PathVariable("id") Long id, @RequestBody ServiceUpdateDTO serviceUpdateDTO) {
         ServiceDTO updatedService = serviceService.updateService(id, serviceUpdateDTO);
         return ResponseEntity.ok(updatedService);
