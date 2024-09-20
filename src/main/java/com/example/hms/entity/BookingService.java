@@ -38,4 +38,7 @@ public class BookingService {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @Version
+    private Long version;
 }

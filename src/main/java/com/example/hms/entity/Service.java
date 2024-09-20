@@ -45,4 +45,6 @@ public class Service {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @Version
+    private Long version;
 }
