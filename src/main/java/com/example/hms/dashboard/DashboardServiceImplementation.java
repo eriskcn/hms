@@ -88,6 +88,9 @@ public class DashboardServiceImplementation implements DashboardService {
         BookingService bookingService = new BookingService();
         bookingService.setBooking(booking);
         bookingService.setService(service);
+        if (roomServiceDTO.getQuantity() == null || roomServiceDTO.getQuantity() <= 0) {
+            roomServiceDTO.setQuantity(1);
+        }
         bookingService.setQuantity(roomServiceDTO.getQuantity());
         bookingServiceRepository.save(bookingService);
 
