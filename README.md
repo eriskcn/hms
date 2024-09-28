@@ -88,8 +88,6 @@ http://localhost:8080
   - search: number
   - filterCriteria: standard, suite, vip
 
-> Note: Maybe you never use BookingServiceController
-
 ### Dependencies
 1. **Spring Boot Data JPA**
   - `groupId`: org.springframework.boot
@@ -147,4 +145,4 @@ POST /hms/dashboard/room-service (body: Long bookingId, Long serviceId, int quan
 
 PUT /hms/dashboard/room-service/:id (body: int quantity)
 
-PUT /check-out/:id
+PUT /hms/dashboard/check-out/:id
